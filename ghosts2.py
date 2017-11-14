@@ -31,51 +31,58 @@ class Ghost(object):
 
     def drawGhost1(self):
         x = 20
-        self.screen.blit(self.GHOST[self.index], (x, 20))
-        self.screen.blit(self.RIGHT, (x, 20))
-        self.screen.blit(self.GHOST[self.index], (x, 82))
-        self.screen.blit(self.LEFT, (x, 82))
-        self.screen.blit(self.GHOST[self.index], (x, 144))
-        self.screen.blit(self.UP, (x, 144))
-        self.screen.blit(self.GHOST[self.index], (x, 206))
-        self.screen.blit(self.DOWN, (x, 206))
-        self.screen.blit(self.PELLET[self.index], (x, 268))
+        self.drawRight(x, 20)
+        self.drawLeft(x, 82)
+        self.drawUp(x, 144)
+        self.drawDown(x, 206)
+        self.drawVulnerable(x, 268)
 
     def drawGhost2(self):
         x = 82
-        self.screen.blit(self.GHOST[self.index], (x, 20))
-        self.screen.blit(self.RIGHT, (x, 20))
-        self.screen.blit(self.GHOST[self.index], (x, 82))
-        self.screen.blit(self.LEFT, (x, 82))
-        self.screen.blit(self.GHOST[self.index], (x, 144))
-        self.screen.blit(self.UP, (x, 144))
-        self.screen.blit(self.GHOST[self.index], (x, 206))
-        self.screen.blit(self.DOWN, (x, 206))
-        self.screen.blit(self.PELLET[self.index], (x, 268))
+        self.drawRight(x, 20)
+        self.drawLeft(x, 82)
+        self.drawUp(x, 144)
+        self.drawDown(x, 206)
+        self.drawVulnerable(x, 268)
 
     def drawGhost3(self):
         x = 144
-        self.screen.blit(self.GHOST[self.index], (x, 20))
-        self.screen.blit(self.RIGHT, (x, 20))
-        self.screen.blit(self.GHOST[self.index], (x, 82))
-        self.screen.blit(self.LEFT, (x, 82))
-        self.screen.blit(self.GHOST[self.index], (x, 144))
-        self.screen.blit(self.UP, (x, 144))
-        self.screen.blit(self.GHOST[self.index], (x, 206))
-        self.screen.blit(self.DOWN, (x, 206))
-        self.screen.blit(self.PELLET[self.index], (x, 268))
+        self.drawRight(x, 20)
+        self.drawLeft(x, 82)
+        self.drawUp(x, 144)
+        self.drawDown(x, 206)
+        self.drawVulnerable(x, 268)
 
     def drawGhost4(self):
         x = 206
-        self.screen.blit(self.GHOST[self.index], (x, 20))
-        self.screen.blit(self.RIGHT, (x, 20))
-        self.screen.blit(self.GHOST[self.index], (x, 82))
-        self.screen.blit(self.LEFT, (x, 82))
-        self.screen.blit(self.GHOST[self.index], (x, 144))
-        self.screen.blit(self.UP, (x, 144))
-        self.screen.blit(self.GHOST[self.index], (x, 206))
-        self.screen.blit(self.DOWN, (x, 206))
-        self.screen.blit(self.PELLET[self.index], (x, 268))
+        self.drawRight(x, 20)
+        self.drawLeft(x, 82)
+        self.drawUp(x, 144)
+        self.drawDown(x, 206)
+        self.drawVulnerable(x, 268)
+
+    def drawGhost(self, x, y):
+        if not self.eaten:
+            self.screen.blit(self.GHOST[self.index], (x, y))
+
+    def drawLeft(self, x, y):
+        self.drawGhost(x, y)
+        self.screen.blit(self.LEFT, (x, y))
+
+    def drawRight(self, x, y):
+        self.drawGhost(x, y)
+        self.screen.blit(self.RIGHT, (x, y))
+
+    def drawUp(self, x, y):
+        self.drawGhost(x, y)
+        self.screen.blit(self.UP, (x, y))
+
+    def drawDown(self, x, y):
+        self.drawGhost(x, y)
+        self.screen.blit(self.DOWN, (x, y))
+
+    def drawVulnerable(self, x, y):
+        self.screen.blit(self.PELLET[self.index], (x, y))
 
     def update(self):
         if self.index == 1:
