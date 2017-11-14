@@ -30,15 +30,24 @@ class Ghost(object):
                           image.load('images/%sUpB.png' % self.name)]
             self.DOWN = [image.load('images/%sDownA.png' % self.name),
                          image.load('images/%sDownB.png' % self.name)]
+        self.EYES = [image.load('images/EyesRight.png'),
+                     image.load('images/EyesLeft.png'),
+                     image.load('images/EyesUp.png'),
+                     image.load('images/EyesDown.png')]
         self.PELLET = [image.load('images/PelletGhostA.png'),
                        image.load('images/PelletGhostB.png')]
 
     def drawGhost1(self):
         x = 20
+        x2 = 268
         self.screen.blit(self.RIGHT[self.index], (x, 20))
+        self.screen.blit(self.EYES[0], (x2, 20))
         self.screen.blit(self.LEFT[self.index], (x, 82))
+        self.screen.blit(self.EYES[1], (x2, 82))
         self.screen.blit(self.UP[self.index], (x, 144))
+        self.screen.blit(self.EYES[2], (x2, 144))
         self.screen.blit(self.DOWN[self.index], (x, 206))
+        self.screen.blit(self.EYES[3], (x2, 206))
         self.screen.blit(self.PELLET[self.index], (x, 268))
 
     def drawGhost2(self):

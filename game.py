@@ -45,7 +45,6 @@ def updateAll():
     pinky.update()
     clyde.update()
     pac.update()
-    mrs.update()
 
 if __name__ == "__main__":
     testDraw()

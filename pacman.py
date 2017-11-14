@@ -20,17 +20,13 @@ class PacMan(object):
         self.DOWN = [image.load('images/%sClosed.png' % self.name),
                    image.load('images/%sDown.png' % self.name)]
 
-    def drawPacMan1(self):
-        x = 268
+    def drawPacMan(self):
+        x = 330
         self.screen.blit(self.RIGHT[self.index], (x, 20))
         self.screen.blit(self.LEFT[self.index], (x, 82))
         self.screen.blit(self.UP[self.index], (x, 144))
         self.screen.blit(self.DOWN[self.index], (x, 206))
 
-    def drawPacMan2(self):
-        x = 330
-        self.screen.blit(self.RIGHT[self.index], (x, 20))
-        self.screen.blit(self.LEFT[self.index], (x, 82))
 
     def update(self):
         if self.index == 1:
