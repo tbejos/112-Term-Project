@@ -4,7 +4,7 @@
 # https://en.wikipedia.org/wiki/Namco_Pac-Man
 # http://www.arcade-museum.com/game_detail.php?game_id=10816
 # http://www.nerdparadise.com/programming/pygame/part1
-import ghosts
+import ghosts, ghosts2
 import pacman
 import pellets
 
@@ -13,10 +13,10 @@ import time
 init()
 screen = display.set_mode((672, 864))
 
-blinky = ghosts.Blinky(screen)
-pinky = ghosts.Pinky(screen)
-inky = ghosts.Inky(screen)
-clyde = ghosts.Clyde(screen)
+blinky = ghosts2.Blinky(screen)
+pinky = ghosts2.Pinky(screen)
+inky = ghosts2.Inky(screen)
+clyde = ghosts2.Clyde(screen)
 pac = pacman.PacMan(screen)
 
 def testDraw():
