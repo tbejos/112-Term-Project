@@ -2,14 +2,14 @@ from pygame import *
 
 class Ghost(object):
 
-    def __init__(self, color, screen, name=None):
-        self.color = color
+    def __init__(self, screen, name="Template"):
         self.screen = screen
+        self.eaten = False
         self.index = 0
-        if name:
-            self.name = name
-            self.GHOST = [image.load('images/%sA.png' % self.name),
-                          image.load('images/%sB.png' % self.name)]
+
+        self.name = name
+        self.GHOST = [image.load('images/%sA.png' % self.name),
+                      image.load('images/%sB.png' % self.name)]
         self.LEFT = image.load('images/EyesLeft.png')
         self.RIGHT = image.load('images/EyesRight.png')
         self.UP = image.load('images/EyesUp.png')
@@ -74,19 +74,19 @@ class Ghost(object):
 class Blinky(Ghost):
 
     def __init__(self, screen):
-        super().__init__(Color("RED"), screen, "Blinky")
+        super().__init__(screen, "Blinky")
 
 class Pinky(Ghost):
 
     def __init__(self, screen):
-        super().__init__(Color("PINK"), screen, "Pinky")
+        super().__init__(screen, "Pinky")
 
 class Inky(Ghost):
 
     def __init__(self, screen):
-        super().__init__(Color("CYAN"), screen, "Inky")
+        super().__init__(screen, "Inky")
 
 class Clyde(Ghost):
 
     def __init__(self, screen):
-        super().__init__(Color("ORANGE"), screen, "Clyde")
+        super().__init__(screen, "Clyde")
