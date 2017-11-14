@@ -6,5 +6,5 @@ PyGame Info
     http://pygame.org/docs/tut/PygameIntro.html
     http://www.nerdparadise.com/programming/pygame/part1
 
-Ghost Image
-    http://www.pngmart.com/image/14620
+Graphics
+    http://cdn.wccftech.com/wp-content/uploads/2015/04/pacmaan.png
