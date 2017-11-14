@@ -27,13 +27,13 @@ class PacMan(object):
         self.screen.blit(self.UP[self.index], (x, 144))
         self.screen.blit(self.DOWN[self.index], (x, 206))
 
+    def drawPacMan2(self):
+        x = 330
+        self.screen.blit(self.RIGHT[self.index], (x, 20))
+        self.screen.blit(self.LEFT[self.index], (x, 82))
+
     def update(self):
         if self.index == 1:
             self.index = 0
         else:
             self.index = 1
-
-# class MrsPacMan(PacMan):
-#
-#     def __init__(self, screen):
-#         super().__init__(screen, "MrsPacMan")

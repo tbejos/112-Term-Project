@@ -30,6 +30,8 @@ class Ghost(object):
                           image.load('images/%sUpB.png' % self.name)]
             self.DOWN = [image.load('images/%sDownA.png' % self.name),
                          image.load('images/%sDownB.png' % self.name)]
+        self.PELLET = [image.load('images/PelletGhostA.png'),
+                       image.load('images/PelletGhostB.png')]
 
     def drawGhost1(self):
         x = 20
@@ -37,6 +39,7 @@ class Ghost(object):
         self.screen.blit(self.LEFT[self.index], (x, 82))
         self.screen.blit(self.UP[self.index], (x, 144))
         self.screen.blit(self.DOWN[self.index], (x, 206))
+        self.screen.blit(self.PELLET[self.index], (x, 268))
 
     def drawGhost2(self):
         x = 82
@@ -44,6 +47,7 @@ class Ghost(object):
         self.screen.blit(self.LEFT[self.index], (x, 82))
         self.screen.blit(self.UP[self.index], (x, 144))
         self.screen.blit(self.DOWN[self.index], (x, 206))
+        self.screen.blit(self.PELLET[self.index], (x, 268))
 
     def drawGhost3(self):
         x = 144
@@ -51,6 +55,7 @@ class Ghost(object):
         self.screen.blit(self.LEFT[self.index], (x, 82))
         self.screen.blit(self.UP[self.index], (x, 144))
         self.screen.blit(self.DOWN[self.index], (x, 206))
+        self.screen.blit(self.PELLET[self.index], (x, 268))
 
     def drawGhost4(self):
         x = 206
@@ -58,6 +63,7 @@ class Ghost(object):
         self.screen.blit(self.LEFT[self.index], (x, 82))
         self.screen.blit(self.UP[self.index], (x, 144))
         self.screen.blit(self.DOWN[self.index], (x, 206))
+        self.screen.blit(self.PELLET[self.index], (x, 268))
 
     def update(self):
         if self.index == 1:
