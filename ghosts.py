@@ -24,7 +24,7 @@ class Ghost(object):
         self.screen.blit(self.image, (20, 20))
 
 class Blinky(Ghost):
-    image = image.load('images/Blinky.png')
+    image = image.load('images/BlinkyLeft.png')
 
     def __init__(self, screen):
         super().__init__(Color("RED"), screen)
