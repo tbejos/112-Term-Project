@@ -2,8 +2,6 @@
 # tbejos
 # 15-112 Term Project
 
-# http://www.pngmart.com/image/14620
-
 # He stated that the red enemy chases Pac-Man,
 # and the pink enemy aims for a position in front of Pac-Man's mouth.
 # The blue enemy is "fickle" and sometimes heads towards Pac-Man, and

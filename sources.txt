@@ -3,8 +3,8 @@ Pac Man Info
     http://www.arcade-museum.com/game_detail.php?game_id=10816
 
 PyGame Info
-
-    http://www.nerdparadise.com/phttp://pygame.org/docs/tut/PygameIntro.htmlrogramming/pygame/part1
+    http://www.nerdparadise.com/programming/pygame/part1
+    http://pygame.org/docs/tut/PygameIntro.html
 
 Graphics
     http://cdn.wccftech.com/wp-content/uploads/2015/04/pacmaan.png

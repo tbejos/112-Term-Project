@@ -21,7 +21,7 @@ class PacMan(object):
                    image.load('images/%sDown.png' % self.name)]
 
     def drawPacMan(self):
-        x = 330
+        x = 268
         self.screen.blit(self.RIGHT[self.index], (x, 20))
         self.screen.blit(self.LEFT[self.index], (x, 82))
         self.screen.blit(self.UP[self.index], (x, 144))

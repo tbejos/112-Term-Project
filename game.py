@@ -1,9 +1,7 @@
 # Txanton Bejos
 # tbejos
 # 15-112 Term Project
-# https://en.wikipedia.org/wiki/Namco_Pac-Man
-# http://www.arcade-museum.com/game_detail.php?game_id=10816
-# http://www.nerdparadise.com/programming/pygame/part1
+
 import ghosts, ghosts2
 import pacman
 import pellets

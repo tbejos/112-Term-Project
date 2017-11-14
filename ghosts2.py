@@ -1,3 +1,15 @@
+# Txanton Bejos
+# tbejos
+# 15-112 Term Project
+
+# He stated that the red enemy chases Pac-Man,
+# and the pink enemy aims for a position in front of Pac-Man's mouth.
+# The blue enemy is "fickle" and sometimes heads towards Pac-Man, and
+# other times away. Although he claimed that the
+# orange enemy's behavior is random, in actuality it alternates from behaving
+# like the red enemy when at some distance from Pac-Man and aiming towards the
+# lower-left corner of the maze whenever it gets too close to him.
+
 from pygame import *
 
 class Ghost(object):
