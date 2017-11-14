@@ -1,0 +1,10 @@
+Pac Man Info
+    https://en.wikipedia.org/wiki/Namco_Pac-Man
+    http://www.arcade-museum.com/game_detail.php?game_id=10816
+
+PyGame Info
+    http://pygame.org/docs/tut/PygameIntro.html
+    http://www.nerdparadise.com/programming/pygame/part1
+
+Ghost Image
+    http://www.pngmart.com/image/14620
