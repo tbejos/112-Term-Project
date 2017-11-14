@@ -18,6 +18,7 @@ pinky = ghosts.Pinky(screen)
 inky = ghosts.Inky(screen)
 clyde = ghosts.Clyde(screen)
 pac = pacman.PacMan(screen)
+# mrs = pacman.MrsPacMan(screen)
 
 def testDraw():
     done = False
@@ -38,7 +39,6 @@ def drawAll():
     pinky.drawGhost3()
     clyde.drawGhost4()
     pac.drawPacMan1()
-    pac.drawPacMan2()
 
 def updateAll():
     blinky.update()

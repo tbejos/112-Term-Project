@@ -6,21 +6,26 @@
 from pygame import *
 
 class PacMan(object):
-    RIGHT = [image.load('images/PacManRight.png'),
-             image.load('images/PacManClosed.png')]
 
-    LEFT = [image.load('images/PacManLeft.png'),
-             image.load('images/PacManClosed.png')]
-
-    def __init__(self, screen):
+    def __init__(self, screen, name="PacMan"):
         self.screen = screen
         self.index = 0
+        self.name = name
+        self.LEFT = [image.load('images/%sClosed.png' % self.name),
+                     image.load('images/%sLeft.png' % self.name)]
+        self.RIGHT = [image.load('images/%sClosed.png' % self.name),
+                      image.load('images/%sRight.png' % self.name)]
+        self.UP = [image.load('images/%sClosed.png' % self.name),
+                   image.load('images/%sUp.png' % self.name)]
+        self.DOWN = [image.load('images/%sClosed.png' % self.name),
+                   image.load('images/%sDown.png' % self.name)]
 
     def drawPacMan1(self):
-        self.screen.blit(self.RIGHT[self.index], (268, 20))
-
-    def drawPacMan2(self):
-        self.screen.blit(self.LEFT[self.index], (268, 82))
+        x = 268
+        self.screen.blit(self.RIGHT[self.index], (x, 20))
+        self.screen.blit(self.LEFT[self.index], (x, 82))
+        self.screen.blit(self.UP[self.index], (x, 144))
+        self.screen.blit(self.DOWN[self.index], (x, 206))
 
     def update(self):
         if self.index == 1:
@@ -28,9 +33,7 @@ class PacMan(object):
         else:
             self.index = 1
 
-class MrsPacMan(PacMan):
-    RIGHT = [image.load('images/PacManRight.png'),
-             image.load('images/PacManClosed.png')]
-
-    LEFT = [image.load('images/PacManLeft.png'),
-            image.load('images/PacManClosed.png')]
+# class MrsPacMan(PacMan):
+#
+#     def __init__(self, screen):
+#         super().__init__(screen, "MrsPacMan")

@@ -16,26 +16,48 @@ from pygame import *
 
 class Ghost(object):
 
-    def __init__(self, color, screen):
+    def __init__(self, color, screen, name=None):
         self.color = color
         self.screen = screen
         self.index = 0
+        if name:
+            self.name = name
+            self.LEFT  = [image.load('images/%sLeftA.png' % self.name),
+                          image.load('images/%sLeftB.png' % self.name)]
+            self.RIGHT = [image.load('images/%sRightA.png' % self.name),
+                          image.load('images/%sRightB.png' % self.name)]
+            self.UP    = [image.load('images/%sUpA.png' % self.name),
+                          image.load('images/%sUpB.png' % self.name)]
+            self.DOWN = [image.load('images/%sDownA.png' % self.name),
+                         image.load('images/%sDownB.png' % self.name)]
 
     def drawGhost1(self):
-        self.screen.blit(self.RIGHT[self.index], (20, 20))
-        self.screen.blit(self.LEFT[self.index], (20, 82))
+        x = 20
+        self.screen.blit(self.RIGHT[self.index], (x, 20))
+        self.screen.blit(self.LEFT[self.index], (x, 82))
+        self.screen.blit(self.UP[self.index], (x, 144))
+        self.screen.blit(self.DOWN[self.index], (x, 206))
 
     def drawGhost2(self):
-        self.screen.blit(self.RIGHT[self.index], (82, 20))
-        self.screen.blit(self.LEFT[self.index], (82, 82))
+        x = 82
+        self.screen.blit(self.RIGHT[self.index], (x, 20))
+        self.screen.blit(self.LEFT[self.index], (x, 82))
+        self.screen.blit(self.UP[self.index], (x, 144))
+        self.screen.blit(self.DOWN[self.index], (x, 206))
 
     def drawGhost3(self):
-        self.screen.blit(self.RIGHT[self.index], (144, 20))
-        self.screen.blit(self.LEFT[self.index], (144, 82))
+        x = 144
+        self.screen.blit(self.RIGHT[self.index], (x, 20))
+        self.screen.blit(self.LEFT[self.index], (x, 82))
+        self.screen.blit(self.UP[self.index], (x, 144))
+        self.screen.blit(self.DOWN[self.index], (x, 206))
 
     def drawGhost4(self):
-        self.screen.blit(self.RIGHT[self.index], (206, 20))
-        self.screen.blit(self.LEFT[self.index], (206, 82))
+        x = 206
+        self.screen.blit(self.RIGHT[self.index], (x, 20))
+        self.screen.blit(self.LEFT[self.index], (x, 82))
+        self.screen.blit(self.UP[self.index], (x, 144))
+        self.screen.blit(self.DOWN[self.index], (x, 206))
 
     def update(self):
         if self.index == 1:
@@ -44,38 +66,21 @@ class Ghost(object):
             self.index = 1
 
 class Blinky(Ghost):
-    LEFT = [image.load('images/BlinkyLeftA.png'),
-            image.load('images/BlinkyLeftB.png')]
-    RIGHT = [image.load('images/BlinkyRightA.png'),
-             image.load('images/BlinkyRightB.png')]
 
     def __init__(self, screen):
-        super().__init__(Color("RED"), screen)
-        self.direction = 'Left'
+        super().__init__(Color("RED"), screen, "Blinky")
 
 class Pinky(Ghost):
-    LEFT = [image.load('images/PinkyLeftA.png'),
-            image.load('images/PinkyLeftB.png')]
-    RIGHT = [image.load('images/PinkyRightA.png'),
-            image.load('images/PinkyRightB.png')]
 
     def __init__(self, screen):
-        super().__init__(Color("PINK"), screen)
+        super().__init__(Color("PINK"), screen, "Pinky")
 
 class Inky(Ghost):
-    LEFT = [image.load('images/InkyLeftA.png'),
-            image.load('images/InkyLeftB.png')]
-    RIGHT = [image.load('images/InkyRightA.png'),
-             image.load('images/InkyRightB.png')]
 
     def __init__(self, screen):
-        super().__init__(Color("CYAN"), screen)
+        super().__init__(Color("CYAN"), screen, "Inky")
 
 class Clyde(Ghost):
-    LEFT = [image.load('images/ClydeLeftA.png'),
-            image.load('images/ClydeLeftB.png')]
-    RIGHT = [image.load('images/ClydeRightA.png'),
-             image.load('images/ClydeRightB.png')]
 
     def __init__(self, screen):
-        super().__init__(Color("ORANGE"), screen)
+        super().__init__(Color("ORANGE"), screen, "Clyde")
