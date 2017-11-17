@@ -12,6 +12,37 @@
 
 from pygame import *
 
+class GhostSprite(sprite.Sprite):
+
+    def __init__(self, screen, name):
+        super().__init__()
+        self.name = name
+        self.screen = screen
+        self.direction = "Left"
+
+        self.image = image.load('images/%s/%sA.png' % (self.name, self.name))
+        self.other = image.load('images/%s/%sB.png' % (self.name, self.name))
+
+        self.eyes = {"Left":image.load('images/Eyes/EyesLeft.png'),
+                     "Right":image.load('images/Eyes/EyesRight.png'),
+                     "Up":image.load('images/Eyes/EyesUp.png'),
+                     "Down":image.load('images/Eyes/EyesDown.png')}
+
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.screen.blit(self.eyes[self.direction], self.rect)
+        temp = self.image
+        self.image = self.other
+        self.other = temp
+        x, y = self.rect.x, self.rect.y
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+    def set_position(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
 class Ghost(object):
 
     def __init__(self, color, screen, name=None):
@@ -79,22 +110,22 @@ class Ghost(object):
         else:
             self.index = 1
 
-class Blinky(Ghost):
+class Blinky(GhostSprite):
 
     def __init__(self, screen):
-        super().__init__(Color("RED"), screen, "Blinky")
+        super().__init__(screen, "Blinky")
 
-class Pinky(Ghost):
-
-    def __init__(self, screen):
-        super().__init__(Color("PINK"), screen, "Pinky")
-
-class Inky(Ghost):
+class Pinky(GhostSprite):
 
     def __init__(self, screen):
-        super().__init__(Color("CYAN"), screen, "Inky")
+        super().__init__(screen, "Pinky")
 
-class Clyde(Ghost):
+class Inky(GhostSprite):
 
     def __init__(self, screen):
-        super().__init__(Color("ORANGE"), screen, "Clyde")
+        super().__init__(screen, "Inky")
+
+class Clyde(GhostSprite):
+
+    def __init__(self, screen):
+        super().__init__(screen, "Clyde")

@@ -2,20 +2,30 @@
 # tbejos
 # 15-112 Term Project
 
-import ghosts2
+import ghosts
 import pacman
 import items
 
 from pygame import *
 import time
+
 init()
 # 224x288 was original resolution so I scaled up by 3 (672x864)
 screen = display.set_mode((224 * 3, 288 * 3))
 
-blinky = ghosts2.Blinky(screen)
-pinky = ghosts2.Pinky(screen)
-inky = ghosts2.Inky(screen)
-clyde = ghosts2.Clyde(screen)
+blinky = ghosts.Blinky(screen)
+pinky = ghosts.Pinky(screen)
+inky = ghosts.Inky(screen)
+clyde = ghosts.Clyde(screen)
+
+ghostGroup = sprite.Group()
+ghostGroup.add(blinky, pinky, inky, clyde)
+
+blinky.set_position(20,20)
+inky.set_position(82, 20)
+pinky.set_position(144, 20)
+clyde.set_position(206, 20)
+
 pac = pacman.PacMan(screen)
 p = items.Pellet(screen)
 pp = items.PowerPellet(screen)
@@ -30,25 +40,19 @@ def testDraw():
                 done = True
         screen.fill((0,0,0)) # Clears Screen
         drawAll()
+        ghostGroup.draw(screen)
+        ghostGroup.update()
         updateAll()
         time.sleep(0.2) # Animation Timing
         display.flip()
 
 def drawAll():
-    blinky.drawGhost1()
-    inky.drawGhost2()
-    pinky.drawGhost3()
-    clyde.drawGhost4()
     pac.drawPacMan()
     p.drawItem(20, 330)
     pp.drawItem(82, 330)
     fruit.drawItem(268, 268)
 
 def updateAll():
-    blinky.update()
-    inky.update()
-    pinky.update()
-    clyde.update()
     pac.update()
 
 if __name__ == "__main__":
