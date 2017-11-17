@@ -2,13 +2,24 @@
 # tbejos
 # 15-112 Term Project
 
-# He stated that the red enemy chases Pac-Man,
-# and the pink enemy aims for a position in front of Pac-Man's mouth.
-# The blue enemy is "fickle" and sometimes heads towards Pac-Man, and
-# other times away. Although he claimed that the
-# orange enemy's behavior is random, in actuality it alternates from behaving
-# like the red enemy when at some distance from Pac-Man and aiming towards the
-# lower-left corner of the maze whenever it gets too close to him.
+# They cycle through different "modes" of behavior, colloquially known as
+# "scatter"–where they retreat to the four corners of the maze
+# "chase"–where their A.I. kicks in. Each ghost has unique A.I.
+# There are certain one-way areas on the maze–namely, the two "T" formations
+# located directly above and below the Ghost Home (the box in the center of the
+# stage)–that the ghosts can travel down through, but can't go up through.
+# There are also two entrances to a tunnel on either side of the maze that Pac-Man
+# can travel through and come out the opposite side of the screen on, which will
+# slow the ghosts down if they enter it. Yet another advantage Pac-Man has over
+# the quartet is that he can turn slightly faster.
+#
+#     the red ghost, Blinky, doggedly pursues Pac-Man;
+#     the pink ghost, Pinky, tries to ambush Pac-Man by moving parallel to him;
+#     the cyan ghost, Inky, tends not to chase Pac-Man directly unless Blinky is near;
+#     the orange ghost, Clyde, pursues Pac-Man when far from him, but usually
+#       wanders away when he gets close.
+
+
 
 from pygame import *
 

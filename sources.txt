@@ -1,6 +1,7 @@
 Pac Man Info
     https://en.wikipedia.org/wiki/Namco_Pac-Man
     http://www.arcade-museum.com/game_detail.php?game_id=10816
+    http://pacman.wikia.com/wiki/Pac-Man_Wiki
 
 PyGame Info
     http://www.nerdparadise.com/programming/pygame/part1

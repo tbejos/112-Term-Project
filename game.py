@@ -2,9 +2,9 @@
 # tbejos
 # 15-112 Term Project
 
-import ghosts, ghosts2
+import ghosts2
 import pacman
-import pellets
+import items
 
 from pygame import *
 import time
@@ -17,8 +17,9 @@ pinky = ghosts2.Pinky(screen)
 inky = ghosts2.Inky(screen)
 clyde = ghosts2.Clyde(screen)
 pac = pacman.PacMan(screen)
-p = pellets.Pellet(screen)
-pp = pellets.PowerPellet(screen)
+p = items.Pellet(screen)
+pp = items.PowerPellet(screen)
+fruit = items.Cherry(screen)
 
 def testDraw():
     done = False
@@ -39,8 +40,9 @@ def drawAll():
     pinky.drawGhost3()
     clyde.drawGhost4()
     pac.drawPacMan()
-    p.draw(20, 330)
-    pp.draw(82, 330)
+    p.drawItem(20, 330)
+    pp.drawItem(82, 330)
+    fruit.drawItem(268, 268)
 
 def updateAll():
     blinky.update()
