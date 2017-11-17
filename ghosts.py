@@ -39,7 +39,7 @@ class GhostSprite(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def set_position(self, x, y):
+    def setPosition(self, x, y):
         self.rect.x = x
         self.rect.y = y
 

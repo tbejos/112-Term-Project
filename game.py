@@ -22,15 +22,21 @@ def main():
     ghostGroup = sprite.Group(blinky, pinky, inky, clyde)
     pacmanGroup = sprite.Group(pac)
 
-    blinky.set_position(20,20)
-    inky.set_position(82, 20)
-    pinky.set_position(144, 20)
-    clyde.set_position(206, 20)
-    pac.set_position(268, 20)
+    blinky.setPosition(20,20)
+    inky.setPosition(82, 20)
+    pinky.setPosition(144, 20)
+    clyde.setPosition(206, 20)
+    pac.setPosition(268, 20)
 
-    p = items.Pellet(screen)
-    pp = items.PowerPellet(screen)
-    fruit = items.Cherry(screen)
+    p = items.Pellet()
+    pp = items.PowerPellet()
+    fruit = items.Cherry()
+
+    p.setPosition(20, 82)
+    pp.setPosition(82, 82)
+    fruit.setPosition(144, 82)
+
+    itemGroup = sprite.Group(p, pp, fruit)
 
     def testDraw():
         done = False
@@ -40,18 +46,14 @@ def main():
                 if events.type == QUIT:
                     done = True
             screen.fill((0,0,0)) # Clears Screen
-            drawItems()
+            itemGroup.draw(screen)
             ghostGroup.draw(screen)
             pacmanGroup.draw(screen)
+            itemGroup.update()
             ghostGroup.update()
             pacmanGroup.update()
             time.sleep(0.2) # Animation Timing
             display.flip()
-
-    def drawItems():
-        p.drawItem(20, 330)
-        pp.drawItem(82, 330)
-        fruit.drawItem(268, 268)
 
     testDraw()
 

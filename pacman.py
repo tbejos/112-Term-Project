@@ -12,6 +12,7 @@ class PacMan(sprite.Sprite):
         self.name = name
         self.direction = "Left"
         self.index = 1
+        self.powerpellet = False
 
         self.image = image.load('images/%s/%sClosed.png' % (self.name,
                                                            self.name))
@@ -37,6 +38,6 @@ class PacMan(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def set_position(self, x, y):
+    def setPosition(self, x, y):
         self.rect.x = x
         self.rect.y = y
