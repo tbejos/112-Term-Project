@@ -14,24 +14,19 @@ from pygame import *
 
 class GhostSprite(sprite.Sprite):
 
-    def __init__(self, screen, name):
+    def __init__(self, name):
         super().__init__()
         self.name = name
-        self.screen = screen
         self.direction = "Left"
 
-        self.image = image.load('images/%s/%sA.png' % (self.name, self.name))
-        self.other = image.load('images/%s/%sB.png' % (self.name, self.name))
-
-        self.eyes = {"Left":image.load('images/Eyes/EyesLeft.png'),
-                     "Right":image.load('images/Eyes/EyesRight.png'),
-                     "Up":image.load('images/Eyes/EyesUp.png'),
-                     "Down":image.load('images/Eyes/EyesDown.png')}
+        self.image = image.load('images/Ghost Sprites/%s%sA.png' % (self.name,
+                                                           self.direction))
+        self.other = image.load('images/Ghost Sprites/%s%sB.png' % (self.name,
+                                                           self.direction))
 
         self.rect = self.image.get_rect()
 
     def update(self):
-        self.screen.blit(self.eyes[self.direction], self.rect)
         temp = self.image
         self.image = self.other
         self.other = temp
@@ -45,21 +40,20 @@ class GhostSprite(sprite.Sprite):
 
 class Blinky(GhostSprite):
 
-    def __init__(self, screen):
-        super().__init__(screen, "Blinky")
+    def __init__(self):
+        super().__init__("Blinky")
 
 class Pinky(GhostSprite):
 
-    def __init__(self, screen):
-        super().__init__(screen, "Pinky")
+    def __init__(self):
+        super().__init__("Pinky")
 
 class Inky(GhostSprite):
 
-    def __init__(self, screen):
-        super().__init__(screen, "Inky")
+    def __init__(self):
+        super().__init__("Inky")
 
 class Clyde(GhostSprite):
 
-    def __init__(self, screen):
-        super().__init__(screen, "Clyde")
-
+    def __init__(self):
+        super().__init__("Clyde")

@@ -6,10 +6,10 @@
 from pygame import *
 
 class PacMan(sprite.Sprite):
-    DIRECTIONS = {"Left":(-10, 0),
-                  "Right":(10, 0),
-                  "Up":(0, -10),
-                  "Down":(0, 10)}
+    DIRECTIONS = {"Left":(-5, 0),
+                  "Right":(5, 0),
+                  "Up":(0, -5),
+                  "Down":(0, 5)}
 
     def __init__(self, name="PacMan"):
         super().__init__()
@@ -39,14 +39,14 @@ class PacMan(sprite.Sprite):
         else:
             self.image = self.backup
             self.index = 1
-            self.movement()
         x, y = self.rect.x, self.rect.y
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
     def movement(self):
-        self.rect.x += self.DIRECTIONS[self.direction][0]
-        self.rect.y += self.DIRECTIONS[self.direction][1]
+        if not self.wall:
+            self.rect.x += self.DIRECTIONS[self.direction][0]
+            self.rect.y += self.DIRECTIONS[self.direction][1]
 
     def setPosition(self, x, y):
         self.rect.x = x
