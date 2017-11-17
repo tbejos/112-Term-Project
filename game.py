@@ -4,7 +4,6 @@
 
 import ghosts, pacman, items
 from pygame import *
-import time
 
 def main():
 
@@ -28,34 +27,50 @@ def main():
     clyde.setPosition(206, 20)
     pac.setPosition(268, 20)
 
-    p = items.Pellet()
-    pp = items.PowerPellet()
-    fruit = items.Cherry()
+    pellet= items.Pellet()
+    powerPellet = items.PowerPellet()
+    cherry = items.Cherry()
 
-    p.setPosition(20, 82)
-    pp.setPosition(82, 82)
-    fruit.setPosition(144, 82)
+    pellet.setPosition(20, 82)
+    powerPellet.setPosition(82, 82)
+    cherry.setPosition(144, 82)
 
-    itemGroup = sprite.Group(p, pp, fruit)
+    itemGroup = sprite.Group(pellet, powerPellet, cherry)
 
-    def testDraw():
-        done = False
+    clock = time.Clock()
+    frames_per_second = 15
+    time_elapsed = 0
 
-        while not done:
-            for events in event.get():
-                if events.type == QUIT:
-                    done = True
-            screen.fill((0,0,0)) # Clears Screen
+    running = True
+
+    while running:
+
+        events = event.poll()
+        if events.type == QUIT or \
+            events.type == KEYDOWN and events.key == K_ESCAPE: running = False
+
+        dt = clock.tick(frames_per_second)
+        time_elapsed += dt
+        if events.type == KEYDOWN:
+            if events.key == K_UP:
+                pac.direction = "Up"
+            elif events.key == K_DOWN:
+                pac.direction = "Down"
+            elif events.key == K_LEFT:
+                pac.direction = "Left"
+            elif events.key == K_RIGHT:
+                pac.direction = "Right"
+
+        if time_elapsed >= 100:
+            screen.fill((0, 0, 0))  # Clears Screen
             itemGroup.draw(screen)
             ghostGroup.draw(screen)
             pacmanGroup.draw(screen)
             itemGroup.update()
             ghostGroup.update()
             pacmanGroup.update()
-            time.sleep(0.2) # Animation Timing
-            display.flip()
-
-    testDraw()
+            time_elapsed = 0
+        display.flip()
 
 if __name__ == "__main__":
     main()

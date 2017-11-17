@@ -6,6 +6,10 @@
 from pygame import *
 
 class PacMan(sprite.Sprite):
+    DIRECTIONS = {"Left":(-10, 0),
+                  "Right":(10, 0),
+                  "Up":(0, -10),
+                  "Down":(0, 10)}
 
     def __init__(self, name="PacMan"):
         super().__init__()
@@ -13,6 +17,7 @@ class PacMan(sprite.Sprite):
         self.direction = "Left"
         self.index = 1
         self.powerpellet = False
+        self.wall = False
 
         self.image = image.load('images/%s/%sClosed.png' % (self.name,
                                                            self.name))
@@ -28,15 +33,20 @@ class PacMan(sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        if self.index == 1:
+        if self.index == 1 or self.wall:
             self.image = self.open[self.direction]
             self.index = 0
         else:
             self.image = self.backup
             self.index = 1
+            self.movement()
         x, y = self.rect.x, self.rect.y
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
+
+    def movement(self):
+        self.rect.x += self.DIRECTIONS[self.direction][0]
+        self.rect.y += self.DIRECTIONS[self.direction][1]
 
     def setPosition(self, x, y):
         self.rect.x = x
