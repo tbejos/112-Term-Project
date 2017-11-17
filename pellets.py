@@ -11,7 +11,7 @@ class Pellet(object):
     def __init__(self, screen, name="Pellet"):
         self.screen = screen
         self.name = name
-        self.IMAGE = image.load('images/%s.png'% self.name)
+        self.IMAGE = image.load('images/Pellets/%s.png'% self.name)
 
     def draw(self, x, y):
         self.screen.blit(self.IMAGE, (x, y))

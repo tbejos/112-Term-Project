@@ -11,14 +11,14 @@ class PacMan(object):
         self.screen = screen
         self.index = 0
         self.name = name
-        self.LEFT = [image.load('images/%sClosed.png' % self.name),
-                     image.load('images/%sLeft.png' % self.name)]
-        self.RIGHT = [image.load('images/%sClosed.png' % self.name),
-                      image.load('images/%sRight.png' % self.name)]
-        self.UP = [image.load('images/%sClosed.png' % self.name),
-                   image.load('images/%sUp.png' % self.name)]
-        self.DOWN = [image.load('images/%sClosed.png' % self.name),
-                   image.load('images/%sDown.png' % self.name)]
+        self.LEFT = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
+                     image.load('images/%s/%sLeft.png' % (self.name, self.name))]
+        self.RIGHT = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
+                      image.load('images/%s/%sRight.png' % (self.name, self.name))]
+        self.UP = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
+                   image.load('images/%s/%sUp.png' % (self.name, self.name))]
+        self.DOWN = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
+                   image.load('images/%s/%sDown.png' % (self.name, self.name))]
 
     def drawPacMan(self):
         x = 268

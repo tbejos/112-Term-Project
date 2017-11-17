@@ -20,12 +20,12 @@ class Ghost(object):
         self.index = 0
 
         self.name = name
-        self.GHOST = [image.load('images/%sA.png' % self.name),
-                      image.load('images/%sB.png' % self.name)]
-        self.LEFT = image.load('images/EyesLeft.png')
-        self.RIGHT = image.load('images/EyesRight.png')
-        self.UP = image.load('images/EyesUp.png')
-        self.DOWN = image.load('images/EyesDown.png')
+        self.GHOST = [image.load('images/%s/%sA.png' % (self.name, self.name)),
+                      image.load('images/%s/%sB.png' % (self.name, self.name))]
+        self.LEFT = image.load('images/Eyes/EyesLeft.png')
+        self.RIGHT = image.load('images/Eyes/EyesRight.png')
+        self.UP = image.load('images/Eyes/EyesUp.png')
+        self.DOWN = image.load('images/Eyes/EyesDown.png')
         self.PELLET = [image.load('images/PelletGhostA.png'),
                        image.load('images/PelletGhostB.png')]
 
