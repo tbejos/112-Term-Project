@@ -34,7 +34,7 @@ class PowerPellet(Item):
         super().__init__("PowerPellet", 50)
         self.other = Surface((42, 42))
 
-    def update(self):
+    def update(self):   # Only Power Pellet blinks
         temp = self.image
         self.image = self.other
         self.other = temp

@@ -17,28 +17,26 @@ def main():
     pinky = ghosts.Pinky()
     inky = ghosts.Inky()
     clyde = ghosts.Clyde()
-
+    # Create PacMan
     pac = pacman.PacMan()
-
+    # Create items
+    pellet = items.Pellet()
+    powerPellet = items.PowerPellet()
+    cherry = items.Cherry()
+    # Create Groups
     ghostGroup = sprite.Group(blinky, pinky, inky, clyde)
     pacmanGroup = sprite.Group(pac)
-
+    itemGroup = sprite.Group(pellet, powerPellet, cherry)
+    # Set's initial positions
     blinky.setPosition(20,20)
     inky.setPosition(82, 20)
     pinky.setPosition(144, 20)
     clyde.setPosition(206, 20)
     pac.setPosition(268, 20)
-
-    pellet= items.Pellet()
-    powerPellet = items.PowerPellet()
-    cherry = items.Cherry()
-
     pellet.setPosition(20, 82)
     powerPellet.setPosition(82, 82)
     cherry.setPosition(144, 82)
-
-    itemGroup = sprite.Group(pellet, powerPellet, cherry)
-
+    # Clock set-up
     clock = time.Clock()
     frames_per_second = 60
     time_elapsed = 0
@@ -52,15 +50,15 @@ def main():
 
     running = True
 
-    draw = 0
-
     while running:
+
+        time_elapsed += clock.tick(frames_per_second)
 
         events = event.poll()
         if events.type == QUIT or \
             events.type == KEYDOWN and events.key == K_ESCAPE: running = False
 
-        time_elapsed +=  clock.tick(frames_per_second)
+        # Movement for PacMan
         if events.type == KEYDOWN:
             if events.key == K_UP:
                 pac.direction = "Up"
@@ -71,21 +69,20 @@ def main():
             elif events.key == K_RIGHT:
                 pac.direction = "Right"
 
-        for ghost in ghostGroup:
-            if sprite.collide_rect(pac, ghost):
-                reset()
-
-
-        pac.movement()
+        # Makes for more fluid movement
+        pac.movement(ghostGroup.sprites())
         screen.fill((0, 0, 0))  # Clears Screen
         itemGroup.draw(screen)
         ghostGroup.draw(screen)
         pacmanGroup.draw(screen)
+
+        # Only animates every ~100 ms
         if time_elapsed >= 100:
             itemGroup.update()
             ghostGroup.update()
             pacmanGroup.update()
             time_elapsed = 0
+
         display.flip()
 
 if __name__ == "__main__":
