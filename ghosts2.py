@@ -20,6 +20,7 @@ class Ghost(object):
         self.index = 0
 
         self.name = name
+        # Loads all the images needed
         self.GHOST = [image.load('images/%s/%sA.png' % (self.name, self.name)),
                       image.load('images/%s/%sB.png' % (self.name, self.name))]
         self.LEFT = image.load('images/Eyes/EyesLeft.png')
@@ -62,7 +63,7 @@ class Ghost(object):
         self.drawVulnerable(x, 268)
 
     def drawGhost(self, x, y):
-        if not self.eaten:
+        if not self.eaten:  # If it is eaten it will only draw the eyes
             self.screen.blit(self.GHOST[self.index], (x, y))
 
     def drawLeft(self, x, y):

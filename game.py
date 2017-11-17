@@ -9,7 +9,8 @@ import pellets
 from pygame import *
 import time
 init()
-screen = display.set_mode((672, 864))
+# 224x288 was original resolution so I scaled up by 3 (672x864)
+screen = display.set_mode((224 * 3, 288 * 3))
 
 blinky = ghosts2.Blinky(screen)
 pinky = ghosts2.Pinky(screen)

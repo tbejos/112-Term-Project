@@ -1,7 +1,7 @@
 # Txanton Bejos
 # tbejos
 # 15-112 Term Project
-# 13 * 3 pixels
+# 14 * 3 pixels
 
 from pygame import *
 
