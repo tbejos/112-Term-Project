@@ -20,14 +20,15 @@ class Ghost(object):
         self.index = 0
         if name:
             self.name = name
-            self.LEFT  = [image.load('images/%sLeftA.png' % self.name),
-                          image.load('images/%sLeftB.png' % self.name)]
-            self.RIGHT = [image.load('images/%sRightA.png' % self.name),
-                          image.load('images/%sRightB.png' % self.name)]
-            self.UP    = [image.load('images/%sUpA.png' % self.name),
-                          image.load('images/%sUpB.png' % self.name)]
-            self.DOWN = [image.load('images/%sDownA.png' % self.name),
-                         image.load('images/%sDownB.png' % self.name)]
+            self.LEFT  = [image.load('images/Old Ghosts/%sLeftA.png' %
+                                     self.name),
+                          image.load('images/Old Ghosts/%sLeftB.png' % self.name)]
+            self.RIGHT = [image.load('images/Old Ghosts/%sRightA.png' % self.name),
+                          image.load('images/Old Ghosts/%sRightB.png' % self.name)]
+            self.UP    = [image.load('images/Old Ghosts/%sUpA.png' % self.name),
+                          image.load('images/Old Ghosts/%sUpB.png' % self.name)]
+            self.DOWN = [image.load('images/Old Ghosts/%sDownA.png' % self.name),
+                         image.load('images/Old Ghosts/%sDownB.png' % self.name)]
         self.EYES = [image.load('images/EyesRight.png'),
                      image.load('images/EyesLeft.png'),
                      image.load('images/EyesUp.png'),

@@ -16,6 +16,8 @@ pinky = ghosts2.Pinky(screen)
 inky = ghosts2.Inky(screen)
 clyde = ghosts2.Clyde(screen)
 pac = pacman.PacMan(screen)
+p = pellets.Pellet(screen)
+pp = pellets.PowerPellet(screen)
 
 def testDraw():
     done = False
@@ -36,6 +38,8 @@ def drawAll():
     pinky.drawGhost3()
     clyde.drawGhost4()
     pac.drawPacMan()
+    p.draw(20, 330)
+    pp.draw(82, 330)
 
 def updateAll():
     blinky.update()
