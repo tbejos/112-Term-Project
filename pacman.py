@@ -5,31 +5,38 @@
 
 from pygame import *
 
-class PacMan(object):
+class PacMan(sprite.Sprite):
 
-    def __init__(self, screen, name="PacMan"):
-        self.screen = screen
-        self.index = 0
+    def __init__(self, name="PacMan"):
+        super().__init__()
         self.name = name
-        self.LEFT = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
-                     image.load('images/%s/%sLeft.png' % (self.name, self.name))]
-        self.RIGHT = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
-                      image.load('images/%s/%sRight.png' % (self.name, self.name))]
-        self.UP = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
-                   image.load('images/%s/%sUp.png' % (self.name, self.name))]
-        self.DOWN = [image.load('images/%s/%sClosed.png' % (self.name, self.name)),
-                   image.load('images/%s/%sDown.png' % (self.name, self.name))]
+        self.direction = "Left"
+        self.index = 1
 
-    def drawPacMan(self):
-        x = 268
-        self.screen.blit(self.RIGHT[self.index], (x, 20))
-        self.screen.blit(self.LEFT[self.index], (x, 82))
-        self.screen.blit(self.UP[self.index], (x, 144))
-        self.screen.blit(self.DOWN[self.index], (x, 206))
-
+        self.image = image.load('images/%s/%sClosed.png' % (self.name,
+                                                           self.name))
+        self.backup = self.image # Backup of closed so that we can update
+        self.open = {"Left":image.load('images/%s/%sLeft.png' % (self.name,
+                                                                 self.name)),
+                      "Right": image.load('images/%s/%sRight.png' % (self.name,
+                                                                     self.name)),
+                      "Up":image.load('images/%s/%sUp.png' % (self.name,
+                                                              self.name)),
+                      "Down":image.load('images/%s/%sDown.png' % (self.name,
+                                                                  self.name))}
+        self.rect = self.image.get_rect()
 
     def update(self):
         if self.index == 1:
+            self.image = self.open[self.direction]
             self.index = 0
         else:
+            self.image = self.backup
             self.index = 1
+        x, y = self.rect.x, self.rect.y
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+    def set_position(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
