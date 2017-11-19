@@ -38,6 +38,8 @@ class GhostSprite(sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+    # TODO: Ghost AI
+
 class Blinky(GhostSprite):
 
     def __init__(self):

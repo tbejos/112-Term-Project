@@ -8,6 +8,8 @@ from pygame import *
 class Game(object):
 
     def __init__(self):
+        init()
+        font.init()
         # 224x288 was original resolution so I scaled up by 3 (672x864)
         self.width = 224 * 3
         self.height = 288 * 3
@@ -34,10 +36,12 @@ class Game(object):
         self.frames_per_second = 60
         self.time_elapsed = 0
         # Additional set-up
-        self.running = True
-        self.events = None
+        self.inMenu = True
+        self.running = False
+        # Font
+        self.myFont = font.SysFont('Consolas', 30)
 
-    # TODO: Make actual reset function (and location)
+    # TODO: Make actual reset function (accurate location)
     def reset(self):
         self.blinky.setPosition(20, 20)
         self.inky.setPosition(82, 20)
@@ -50,29 +54,36 @@ class Game(object):
         self.running = False
 
     def keyPressed(self):
-        self.events = event.poll()
+        events = event.poll()
         # Checks if it should Quit
-        if self.events.type == QUIT:
+        if events.type == QUIT:
             self.running = False
         # Movement for PacMan
-        if self.events.type == KEYDOWN:
-            if self.events.key == K_ESCAPE:
+        if events.type == KEYDOWN:
+            if events.key == K_ESCAPE:
                 self.running = False
-            if self.events.key == K_UP:
+            if events.key == K_UP:
                 self.pac.direction = "Up"
-            elif self.events.key == K_DOWN:
+            elif events.key == K_DOWN:
                 self.pac.direction = "Down"
-            elif self.events.key == K_LEFT:
+            elif events.key == K_LEFT:
                 self.pac.direction = "Left"
-            elif self.events.key == K_RIGHT:
+            elif events.key == K_RIGHT:
                 self.pac.direction = "Right"
 
-    def drawAll(self):
+    def drawGame(self):
         # Clear screen and draw all groups
         self.screen.fill((0, 0, 0))
         self.itemGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
+        display.flip()
+
+    # TODO: Menu Design
+    def drawMenu(self):
+        self.screen.fill((0, 0, 0))
+        self.screen.blit(self.myFont.render('Press Enter to Start', False, \
+                                            (255, 255, 255)), (20, 20))
         display.flip()
 
     def animate(self):
@@ -102,21 +113,34 @@ class Game(object):
             # Makes for more fluid movement
             self.pac.movement()
             # Draw
-            self.drawAll()
+            self.drawGame()
             # Only animates every ~100 ms to make it normal speed
             if time_elapsed >= 100:
                 self.animate()
                 time_elapsed = 0
             self.checkCollision()
 
+    def menu(self):
+        while self.inMenu:
+            self.drawMenu()
+            for menuEvent in event.get():
+                if menuEvent.type == QUIT:
+                    self.inMenu = False
+                if menuEvent.type == KEYDOWN:
+                    if menuEvent.key == K_ESCAPE:
+                        self.inMenu = False
+                    if menuEvent.key == K_RETURN:
+                        self.inMenu = False
+                        self.running = True
+                        self.reset()
+                        self.run()
+
 def main():
-    init()
     game = Game()
     game.pellet.setPosition(20, 82)
     game.powerPellet.setPosition(82, 82)
     game.cherry.setPosition(144, 82)
-    game.reset()
-    game.run()
+    game.menu()
 
 
 if __name__ == "__main__":
