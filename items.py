@@ -46,3 +46,13 @@ class Cherry(Item):
 
     def __init__(self):
         super().__init__("Cherry", 100)
+
+class Strawberry(Item):
+
+    def __init__(self):
+        super().__init__("Strawberry", 300)
+
+class Orange(Item):
+
+    def __init__(self):
+        super().__init__("Orange", 500)

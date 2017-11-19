@@ -25,12 +25,14 @@ class Game(object):
         self.pellet = items.Pellet()
         self.powerPellet = items.PowerPellet()
         self.cherry = items.Cherry()
+        self.berry = items.Strawberry()
+        self.orange = items.Orange()
         # Create Groups
         self.ghostGroup = sprite.Group(self.blinky, self.pinky, self.inky,
                                        self.clyde)
         self.pacmanGroup = sprite.Group(self.pac)
         self.itemGroup = sprite.Group(self.pellet, self.powerPellet,
-                                      self.cherry)
+                                      self.cherry, self.berry, self.orange)
         # Clock set-up
         self.clock = time.Clock()
         self.frames_per_second = 60
@@ -140,6 +142,8 @@ def main():
     game.pellet.setPosition(20, 82)
     game.powerPellet.setPosition(82, 82)
     game.cherry.setPosition(144, 82)
+    game.berry.setPosition(206, 82)
+    game.orange.setPosition(268, 82)
     game.menu()
 
 
