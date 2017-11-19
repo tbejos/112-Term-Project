@@ -50,6 +50,10 @@ class Game(object):
         self.running = False
 
     def keyPressed(self):
+        self.events = event.poll()
+        # Checks if it should Quit
+        if self.events.type == QUIT:
+            self.running = False
         # Movement for PacMan
         if self.events.type == KEYDOWN:
             if self.events.key == K_ESCAPE:
@@ -69,12 +73,14 @@ class Game(object):
         self.itemGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
+        display.flip()
 
     def animate(self):
         self.itemGroup.update()
         self.ghostGroup.update()
         self.pacmanGroup.update()
 
+    # TODO: Move collision checks from PacMan to here as functions
     def checkCollision(self):
         if self.pac.ghostCheck(self.ghostGroup):
             self.pac.lives -= 1
@@ -89,26 +95,19 @@ class Game(object):
     def run(self):
         time_elapsed = 0
         while self.running:
-
+            # Keeps track of the number of ticks
             time_elapsed += self.clock.tick(self.frames_per_second)
-
-            self.events = event.poll()
-            if self.events.type == QUIT:
-                self.running = False
+            # Checks for input
             self.keyPressed()
             # Makes for more fluid movement
             self.pac.movement()
             # Draw
             self.drawAll()
             # Only animates every ~100 ms to make it normal speed
-            # otherwise it would animate 60 times per second
             if time_elapsed >= 100:
                 self.animate()
                 time_elapsed = 0
             self.checkCollision()
-
-            display.flip()
-
 
 def main():
     init()
