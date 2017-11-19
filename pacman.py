@@ -18,11 +18,11 @@ class PacMan(sprite.Sprite):
         self.direction = "Left"
         self.index = 1
         self.powerpellet = False
-        self.collide = False
+        self.lives = 3
 
         self.image = image.load('images/%s/%sClosed.png' % (self.name,
                                                            self.name))
-        self.backup = self.image # Backup of closed so that we can update
+        self.backup = self.image # Backup of closed so that we can update()
         self.open = {"Left":image.load('images/%s/%sLeft.png' % (self.name,
                                                                  self.name)),
                       "Right": image.load('images/%s/%sRight.png' % (self.name,
@@ -44,26 +44,31 @@ class PacMan(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def movement(self, collidable):
+    def movement(self):
         self.rect.x += self.DIRECTIONS[self.direction][0]
+        self.rect.y += self.DIRECTIONS[self.direction][1]
 
+    def wallCheck(self, collidable):
         collisionList = sprite.spritecollide(self, collidable, False)
-
+        # If horizontal collision
         for hitObject in collisionList:
             if self.DIRECTIONS[self.direction][0] > 0:
                 self.rect.right = hitObject.rect.left
             elif self.DIRECTIONS[self.direction][0] < 0:
                 self.rect.left = hitObject.rect.right
-
-        self.rect.y += self.DIRECTIONS[self.direction][1]
-
+        # Have to redefine list since sprite may have moved in last loop
         collisionList = sprite.spritecollide(self, collidable, False)
-
+        # If vertical collision
         for hitObject in collisionList:
             if self.DIRECTIONS[self.direction][1] > 0:
                 self.rect.bottom = hitObject.rect.top
             elif self.DIRECTIONS[self.direction][1] < 0:
                 self.rect.top = hitObject.rect.bottom
+
+    def ghostCheck(self, ghostGroup): # True or False
+        collisionList = sprite.spritecollide(self, ghostGroup, False)
+        # If touching >= 1 ghost
+        return len(collisionList) > 0
 
     def setPosition(self, x, y):
         self.rect.x = x

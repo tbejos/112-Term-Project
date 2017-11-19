@@ -49,7 +49,8 @@ def main():
         pac.setPosition(width // 2, height // 2)
 
     running = True
-
+    # Set up for start
+    reset()
     while running:
 
         time_elapsed += clock.tick(frames_per_second)
@@ -70,18 +71,31 @@ def main():
                 pac.direction = "Right"
 
         # Makes for more fluid movement
-        pac.movement(ghostGroup.sprites())
-        screen.fill((0, 0, 0))  # Clears Screen
+        pac.movement()
+        # If hitting wall then reset before drawing movement
+        pac.wallCheck(ghostGroup.sprites())
+        # Clear screen and draw all groups
+        screen.fill((0, 0, 0))
         itemGroup.draw(screen)
         ghostGroup.draw(screen)
         pacmanGroup.draw(screen)
 
-        # Only animates every ~100 ms
+        # Only animates every ~100 ms to make it normal speed
         if time_elapsed >= 100:
             itemGroup.update()
             ghostGroup.update()
             pacmanGroup.update()
             time_elapsed = 0
+
+        # TODO: gameOver() and reset()
+        if pac.ghostCheck(ghostGroup.sprites()):
+            pac.lives -= 1
+            if pac.lives < 1:
+                pass
+                # gameOver()
+            else:
+                pass
+                # reset()
 
         display.flip()
 
