@@ -61,6 +61,16 @@ class GhostSprite(sprite.Sprite):
         self.rect.x += self.DIRECTIONS[self.direction][0]
         self.rect.y += self.DIRECTIONS[self.direction][1]
 
+    def switchDirection(self):
+        if self.direction == "Up":
+            self.direction = "Down"
+        elif self.direction == "Down":
+            self.direction = "Up"
+        elif self.direction =="Left":
+            self.direction = "Right"
+        elif self.direction == "Right":
+            self.direction = "Left"
+
     # TODO: Ghost AI
 
 class Blinky(GhostSprite):

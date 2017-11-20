@@ -14,6 +14,7 @@ class Game(object):
         self.width = 224 * 3
         self.height = 288 * 3
         self.screen = display.set_mode((self.width, self.height))
+        self.background = image.load('images/BackGround.png')
         # Create Ghosts
         self.blinky = ghosts.Blinky()
         self.pinky = ghosts.Pinky()
@@ -27,14 +28,13 @@ class Game(object):
         self.cherry = items.Cherry()
         self.berry = items.Strawberry()
         self.orange = items.Orange()
-        self.box = walls.GhostBox()
         # Create Groups
         self.ghostGroup = sprite.Group(self.blinky, self.pinky, self.inky,
                                        self.clyde)
         self.pacmanGroup = sprite.Group(self.pac)
         self.itemGroup = sprite.Group(self.pellet, self.powerPellet,
                                       self.cherry, self.berry, self.orange)
-        self.wallGroup = sprite.Group(self.box)
+        self.wallGroup = sprite.Group()
         # Clock set-up
         self.clock = time.Clock()
         self.frames_per_second = 60
@@ -44,7 +44,20 @@ class Game(object):
         self.running = False
         # Font
         self.myFont = font.SysFont('Consolas', 30)
-        self.maze =  image.load('images/PacMaze.png')
+        self.makeMaze()
+
+    def makeMaze(self):
+        maze = open("Maze.txt", "r")
+        ycounter = 0
+        for line in maze.readlines():
+            for char in range(len(line)):
+                if line[char] == "+":
+                    self.wallGroup.add(walls.SmallWallTile(12 * char,
+                                                           72 + ycounter))
+            ycounter += 12
+
+        for sprite in self.wallGroup.sprites():
+            print("%d, %d" % (sprite.rect.x, sprite.rect.y))
 
     def reset(self):
         self.blinky.setPosition(315, 327)
@@ -78,11 +91,13 @@ class Game(object):
     def drawGame(self):
         # Clear screen and draw all groups
         self.screen.fill((0, 0, 0))
+        self.screen.blit(self.background, (0, 0))
         if self.inMenu:  # TODO: Menu Design
             self.screen.blit(self.ready, (264, 477))
         self.itemGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
+        self.wallGroup.draw(self.screen)
         self.wallGroup.draw(self.screen)
         display.flip()
 
@@ -100,8 +115,6 @@ class Game(object):
                 self.reset()
         # If hitting wall then reset before drawing movement
         self.wallCheck(self.pac)
-        # for ghost in self.ghostGroup.sprites():
-        #     self.wallCheck(ghost)
         self.pac.itemCheck(self.itemGroup)
 
     # TODO: Doesn't work if inside the box
@@ -112,8 +125,11 @@ class Game(object):
         for hitObject in collisionList:
             if character.DIRECTIONS[character.direction][0] > 0:
                 character.rect.right = hitObject.rect.left
+                return True
             elif character.DIRECTIONS[character.direction][0] < 0:
                 character.rect.left = hitObject.rect.right
+                return True
+
         # Have to redefine list since sprite may have moved in last loop
         collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
                                              False)
@@ -121,8 +137,10 @@ class Game(object):
         for hitObject in collisionList:
             if character.DIRECTIONS[character.direction][1] > 0:
                 character.rect.bottom = hitObject.rect.top
+                return True
             elif character.DIRECTIONS[character.direction][1] < 0:
                 character.rect.top = hitObject.rect.bottom
+                return True
 
     def run(self):
         time_elapsed = 0
@@ -132,10 +150,13 @@ class Game(object):
             # Checks for input
             self.keyPressed()
             # Move and check for collisions/reset position
-            # for ghost in self.ghostGroup.sprites():
-            #     ghost.movement()
+            for ghost in self.ghostGroup.sprites():
+                ghost.movement()
             self.pac.movement()
             self.checkCollision()
+            for ghost in self.ghostGroup.sprites():
+                if self.wallCheck(ghost):
+                    ghost.switchDirection()
             # Draw
             self.drawGame()
             # Only animates every ~100 ms to make it normal speed
