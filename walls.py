@@ -15,17 +15,12 @@ class Wall(sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-class LargeWallTile(Wall):
+class WallTile(Wall):
 
     def __init__(self, x=0, y=0):
-        super().__init__("LargeWallTile", x, y)
-
-class SmallWallTile(Wall):
-
-    def __init__(self, x=0, y=0):
-        super().__init__("SmallWallTile", x, y)
+        super().__init__("WallTile", x, y)
 
 class TeleportBlock(Wall):
 
     def __init__(self, x=0, y=0):
-        super().__init__("LargeWallTile", x, y)
+        super().__init__("TPBlock", x, y)

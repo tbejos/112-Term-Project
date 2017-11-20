@@ -44,6 +44,8 @@ class Game(object):
         self.running = False
         # Font
         self.myFont = font.SysFont('Consolas', 30)
+        self.left = walls.TeleportBlock(0, 396)
+        self.right = walls.TeleportBlock(669, 396)
         self.makeMaze()
 
     def makeMaze(self):
@@ -52,12 +54,9 @@ class Game(object):
         for line in maze.readlines():
             for char in range(len(line)):
                 if line[char] == "+":
-                    self.wallGroup.add(walls.SmallWallTile(12 * char,
-                                                           72 + ycounter))
+                    self.wallGroup.add(walls.WallTile(12 * char,
+                                                      72 + ycounter))
             ycounter += 12
-
-        for sprite in self.wallGroup.sprites():
-            print("%d, %d" % (sprite.rect.x, sprite.rect.y))
 
     def reset(self):
         self.blinky.setPosition(315, 327)
@@ -117,12 +116,17 @@ class Game(object):
         self.wallCheck(self.pac)
         self.pac.itemCheck(self.itemGroup)
 
-    # TODO: Doesn't work if inside the box
     def wallCheck(self, character):
         collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
                                              False)
         # If horizontal collision
         for hitObject in collisionList:
+            if hitObject == self.left:
+                character.rect.left = self.right.rect.left
+                return
+            elif hitObject == self.right:
+                character.rect.right = self.left.rect.right
+                return
             if character.DIRECTIONS[character.direction][0] > 0:
                 character.rect.right = hitObject.rect.left
                 return True
