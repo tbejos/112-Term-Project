@@ -86,7 +86,7 @@ class Game(object):
         if events.type == QUIT:
             self.running = False
         # Movement for PacMan
-        if events.type == KEYDOWN:
+        if events.type == KEYDOWN and not self.wallCheck(self.pac):
             if events.key == K_ESCAPE:
                 self.running = False
             if events.key == K_UP:
@@ -102,9 +102,15 @@ class Game(object):
         # Clear screen and draw all groups
         self.screen.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
+        score = self.myFont.render("Score: %4d" % self.pac.score, False, (255,
+                                                                    255, 255))
+        lives = self.myFont.render("Lives: %d" % self.pac.lives, False, (255,
+                                                                    255, 255))
+        self.screen.blit(score, (460, 20))
+        self.screen.blit(lives, (20, 20))
         if self.inMenu:  # TODO: Menu Design
             self.screen.blit(self.ready, (264, 477))
-        self.itemGroup.draw(self.screen)
+        # self.itemGroup.draw(self.screen)
         self.pelletGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
