@@ -2,7 +2,7 @@
 # tbejos
 # 15-112 Term Project
 
-import ghosts, pacman, items
+import ghosts, pacman, items, walls
 from pygame import *
 
 class Game(object):
@@ -27,12 +27,14 @@ class Game(object):
         self.cherry = items.Cherry()
         self.berry = items.Strawberry()
         self.orange = items.Orange()
+        self.box = walls.GhostBox()
         # Create Groups
         self.ghostGroup = sprite.Group(self.blinky, self.pinky, self.inky,
                                        self.clyde)
         self.pacmanGroup = sprite.Group(self.pac)
         self.itemGroup = sprite.Group(self.pellet, self.powerPellet,
                                       self.cherry, self.berry, self.orange)
+        self.wallGroup = sprite.Group(self.box)
         # Clock set-up
         self.clock = time.Clock()
         self.frames_per_second = 60
@@ -42,14 +44,14 @@ class Game(object):
         self.running = False
         # Font
         self.myFont = font.SysFont('Consolas', 30)
+        self.maze =  image.load('images/PacMaze.png')
 
-    # TODO: Make actual reset function (accurate location)
     def reset(self):
-        self.blinky.setPosition(20, 20)
-        self.inky.setPosition(82, 20)
-        self.pinky.setPosition(144, 20)
-        self.clyde.setPosition(206, 20)
-        self.pac.setPosition(self.width // 2, self.height * (2 / 3))
+        self.blinky.setPosition(315, 327)
+        self.inky.setPosition(267, 399)
+        self.pinky.setPosition(315, 399)
+        self.clyde.setPosition(363, 399)
+        self.pac.setPosition(315, 615)
 
     # TODO: Make actual gameOver function
     def gameOver(self):
@@ -76,16 +78,12 @@ class Game(object):
     def drawGame(self):
         # Clear screen and draw all groups
         self.screen.fill((0, 0, 0))
+        if self.inMenu:  # TODO: Menu Design
+            self.screen.blit(self.ready, (264, 477))
         self.itemGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
-        display.flip()
-
-    # TODO: Menu Design
-    def drawMenu(self):
-        self.screen.fill((0, 0, 0))
-        self.screen.blit(self.myFont.render('Press Enter to Start', False, \
-                                            (255, 255, 255)), (20, 20))
+        self.wallGroup.draw(self.screen)
         display.flip()
 
     def animate(self):
@@ -93,7 +91,6 @@ class Game(object):
         self.ghostGroup.update()
         self.pacmanGroup.update()
 
-    # TODO: Move collision checks from PacMan to here as functions
     def checkCollision(self):
         if self.pac.ghostCheck(self.ghostGroup):
             self.pac.lives -= 1
@@ -102,8 +99,30 @@ class Game(object):
             else:
                 self.reset()
         # If hitting wall then reset before drawing movement
-        # self.pac.wallCheck(self.ghostGroup)
+        self.wallCheck(self.pac)
+        # for ghost in self.ghostGroup.sprites():
+        #     self.wallCheck(ghost)
         self.pac.itemCheck(self.itemGroup)
+
+    # TODO: Doesn't work if inside the box
+    def wallCheck(self, character):
+        collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
+                                             False)
+        # If horizontal collision
+        for hitObject in collisionList:
+            if character.DIRECTIONS[character.direction][0] > 0:
+                character.rect.right = hitObject.rect.left
+            elif character.DIRECTIONS[character.direction][0] < 0:
+                character.rect.left = hitObject.rect.right
+        # Have to redefine list since sprite may have moved in last loop
+        collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
+                                             False)
+        # If vertical collision
+        for hitObject in collisionList:
+            if character.DIRECTIONS[character.direction][1] > 0:
+                character.rect.bottom = hitObject.rect.top
+            elif character.DIRECTIONS[character.direction][1] < 0:
+                character.rect.top = hitObject.rect.bottom
 
     def run(self):
         time_elapsed = 0
@@ -112,19 +131,23 @@ class Game(object):
             time_elapsed += self.clock.tick(self.frames_per_second)
             # Checks for input
             self.keyPressed()
-            # Makes for more fluid movement
+            # Move and check for collisions/reset position
+            # for ghost in self.ghostGroup.sprites():
+            #     ghost.movement()
             self.pac.movement()
+            self.checkCollision()
             # Draw
             self.drawGame()
             # Only animates every ~100 ms to make it normal speed
             if time_elapsed >= 100:
                 self.animate()
                 time_elapsed = 0
-            self.checkCollision()
 
     def menu(self):
+        self.ready = image.load('images/Walls/Ready.png')
+        self.reset()
         while self.inMenu:
-            self.drawMenu()
+            self.drawGame()
             for menuEvent in event.get():
                 if menuEvent.type == QUIT:
                     self.inMenu = False
@@ -134,7 +157,6 @@ class Game(object):
                     if menuEvent.key == K_RETURN:
                         self.inMenu = False
                         self.running = True
-                        self.reset()
                         self.run()
 
 def main():
@@ -145,7 +167,6 @@ def main():
     game.berry.setPosition(206, 82)
     game.orange.setPosition(268, 82)
     game.menu()
-
 
 if __name__ == "__main__":
     main()

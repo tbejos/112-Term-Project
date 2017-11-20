@@ -49,31 +49,11 @@ class PacMan(sprite.Sprite):
         self.rect.x += self.DIRECTIONS[self.direction][0]
         self.rect.y += self.DIRECTIONS[self.direction][1]
 
-    # TODO: Move collision checks to game.py
-    def wallCheck(self, wallGroup):
-        collisionList = sprite.spritecollide(self, wallGroup.sprites(), False)
-        # If horizontal collision
-        for hitObject in collisionList:
-            if self.DIRECTIONS[self.direction][0] > 0:
-                self.rect.right = hitObject.rect.left
-            elif self.DIRECTIONS[self.direction][0] < 0:
-                self.rect.left = hitObject.rect.right
-        # Have to redefine list since sprite may have moved in last loop
-        collisionList = sprite.spritecollide(self, wallGroup.sprites(), False)
-        # If vertical collision
-        for hitObject in collisionList:
-            if self.DIRECTIONS[self.direction][1] > 0:
-                self.rect.bottom = hitObject.rect.top
-            elif self.DIRECTIONS[self.direction][1] < 0:
-                self.rect.top = hitObject.rect.bottom
-
-    # TODO: Move collision checks to game.py
     def ghostCheck(self, ghostGroup): # True or False
         collisionList = sprite.spritecollide(self, ghostGroup.sprites(), False)
         # If touching >= 1 ghost
         return len(collisionList) > 0
 
-    # TODO: Move collision checks to game.py
     def itemCheck(self, itemGroup):
         collisionList = sprite.spritecollide(self, itemGroup.sprites(), False)
         for item in collisionList:
