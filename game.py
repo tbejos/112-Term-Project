@@ -23,8 +23,6 @@ class Game(object):
         # Create PacMan
         self.pac = pacman.PacMan()
         # Create items
-        self.pellet = items.Pellet()
-        self.powerPellet = items.PowerPellet()
         self.cherry = items.Cherry()
         self.berry = items.Strawberry()
         self.orange = items.Orange()
@@ -32,9 +30,10 @@ class Game(object):
         self.ghostGroup = sprite.Group(self.blinky, self.pinky, self.inky,
                                        self.clyde)
         self.pacmanGroup = sprite.Group(self.pac)
-        self.itemGroup = sprite.Group(self.pellet, self.powerPellet,
-                                      self.cherry, self.berry, self.orange)
+        self.itemGroup = sprite.Group(self.cherry, self.berry, self.orange)
         self.wallGroup = sprite.Group()
+        self.pelletGroup = sprite.Group()
+        self.tpGroup = sprite.Group()
         # Clock set-up
         self.clock = time.Clock()
         self.frames_per_second = 60
@@ -44,8 +43,9 @@ class Game(object):
         self.running = False
         # Font
         self.myFont = font.SysFont('Consolas', 30)
-        self.left = walls.TeleportBlock(0, 396)
-        self.right = walls.TeleportBlock(669, 396)
+        self.left = walls.TeleportBlock(-3, 396)
+        self.right = walls.TeleportBlock(672, 396)
+        self.tpGroup.add(self.left, self.right)
         self.makeMaze()
 
     def makeMaze(self):
@@ -57,6 +57,17 @@ class Game(object):
                     self.wallGroup.add(walls.WallTile(12 * char,
                                                       72 + ycounter))
             ycounter += 12
+        pellets = open("Pellets.txt", "r")
+        ycounter = 0
+        for line in pellets.readlines():
+            for char in range(len(line)):
+                if line[char] == "+":
+                    self.pelletGroup.add(items.Pellet(24 * char,
+                                                      72 + ycounter))
+                elif line[char] == "*":
+                    self.pelletGroup.add(items.PowerPellet(24 * char,
+                                                           72 + ycounter))
+            ycounter += 24
 
     def reset(self):
         self.blinky.setPosition(315, 327)
@@ -94,6 +105,7 @@ class Game(object):
         if self.inMenu:  # TODO: Menu Design
             self.screen.blit(self.ready, (264, 477))
         self.itemGroup.draw(self.screen)
+        self.pelletGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
         self.wallGroup.draw(self.screen)
@@ -101,7 +113,7 @@ class Game(object):
         display.flip()
 
     def animate(self):
-        self.itemGroup.update()
+        self.pelletGroup.update()
         self.ghostGroup.update()
         self.pacmanGroup.update()
 
@@ -114,9 +126,19 @@ class Game(object):
                 self.reset()
         # If hitting wall then reset before drawing movement
         self.wallCheck(self.pac)
-        self.pac.itemCheck(self.itemGroup)
+        self.pac.itemCheck(self.pelletGroup)
 
     def wallCheck(self, character):
+        teleport = sprite.spritecollide(character, self.tpGroup, False)
+
+        for tp in teleport:
+            if tp == self.left:
+                character.rect.right = self.right.rect.left
+                return
+            elif tp == self.right:
+                character.rect.left = self.left.rect.right
+                return
+
         collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
                                              False)
         # If horizontal collision
@@ -186,11 +208,9 @@ class Game(object):
 
 def main():
     game = Game()
-    game.pellet.setPosition(20, 82)
-    game.powerPellet.setPosition(82, 82)
-    game.cherry.setPosition(144, 82)
-    game.berry.setPosition(206, 82)
-    game.orange.setPosition(268, 82)
+    # game.cherry.setPosition(144, 82)
+    # game.berry.setPosition(206, 82)
+    # game.orange.setPosition(268, 82)
     game.menu()
 
 if __name__ == "__main__":
