@@ -7,10 +7,10 @@ from pygame import *
 
 class PacMan(sprite.Sprite):
     # Amount PacMan moves per tick
-    DIRECTIONS = {"Left":(-5, 0),
-                  "Right":(5, 0),
-                  "Up":(0, -5),
-                  "Down":(0, 5)}
+    DIRECTIONS = {"Left":(-1, 0),
+                  "Right":(1, 0),
+                  "Up":(0, -1),
+                  "Down":(0, 1)}
 
     def __init__(self, name="PacMan"):
         super().__init__()
@@ -20,6 +20,7 @@ class PacMan(sprite.Sprite):
         self.powerpellet = False
         self.lives = 3
         self.score = 0
+        self.turn = None
 
         self.image = image.load('images/%s/%sClosed.png' % (self.name,
                                                            self.name))
@@ -60,6 +61,17 @@ class PacMan(sprite.Sprite):
             self.score += item.points
             item.kill()
 
+    def switchDirection(self):
+        if self.direction == "Up":
+            self.direction = "Down"
+        elif self.direction == "Down":
+            self.direction = "Up"
+        elif self.direction =="Left":
+            self.direction = "Right"
+        elif self.direction == "Right":
+            self.direction = "Left"
+
     def setPosition(self, x, y):
         self.rect.x = x
         self.rect.y = y
+

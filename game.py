@@ -30,10 +30,11 @@ class Game(object):
         self.ghostGroup = sprite.Group(self.blinky, self.pinky, self.inky,
                                        self.clyde)
         self.pacmanGroup = sprite.Group(self.pac)
-        self.itemGroup = sprite.Group(self.cherry, self.berry, self.orange)
+        self.fruitGroup = sprite.Group(self.cherry, self.berry, self.orange)
         self.wallGroup = sprite.Group()
         self.pelletGroup = sprite.Group()
         self.tpGroup = sprite.Group()
+        self.turnGroup = sprite.Group()
         # Clock set-up
         self.clock = time.Clock()
         self.frames_per_second = 60
@@ -43,8 +44,9 @@ class Game(object):
         self.running = False
         # Font
         self.myFont = font.SysFont('Consolas', 30)
-        self.left = walls.TeleportBlock(-3, 396)
-        self.right = walls.TeleportBlock(672, 396)
+        # -29 and 698 make it so PacMan is completely off screen
+        self.left = walls.TeleportBlock(-29, 396)
+        self.right = walls.TeleportBlock(698, 396)
         self.tpGroup.add(self.left, self.right)
         self.makeMaze()
 
@@ -54,7 +56,7 @@ class Game(object):
         for line in maze.readlines():
             for char in range(len(line)):
                 if line[char] == "+":
-                    self.wallGroup.add(walls.WallTile(12 * char,
+                    self.wallGroup.add(walls.HitBox(12 * char,
                                                       72 + ycounter))
             ycounter += 12
         pellets = open("Pellets.txt", "r")
@@ -68,39 +70,50 @@ class Game(object):
                     self.pelletGroup.add(items.PowerPellet(24 * char,
                                                            72 + ycounter))
             ycounter += 24
+        turns = open("turn.txt", "r")
+        for line in turns.readlines():
+            list = []
+            line = line[:-1]
+            for param in line.split(","):
+                list.append(param)
+            self.turnGroup.add(walls.Turn( list[2:],int(list[0]), int(list[1])))
 
     def reset(self):
         self.blinky.setPosition(315, 327)
+        self.blinky.direction = "Left"
         self.inky.setPosition(267, 399)
+        self.inky.direction = "Up"
         self.pinky.setPosition(315, 399)
+        self.pinky.direction = "Down"
         self.clyde.setPosition(363, 399)
-        self.pac.setPosition(315, 615)
+        self.clyde.direction = "Up"
+        self.pac.setPosition(312, 612)
+        self.pac.direction = "Left"
 
     # TODO: Make actual gameOver function
     def gameOver(self):
         self.running = False
 
     def keyPressed(self):
-        events = event.poll()
+        events = key.get_pressed()
         # Checks if it should Quit
-        if events.type == QUIT:
+        if event.poll().type == QUIT:
             self.running = False
         # Movement for PacMan
-        if events.type == KEYDOWN and not self.wallCheck(self.pac):
-            if events.key == K_ESCAPE:
-                self.running = False
-            if events.key == K_UP:
-                self.pac.direction = "Up"
-            elif events.key == K_DOWN:
-                self.pac.direction = "Down"
-            elif events.key == K_LEFT:
-                self.pac.direction = "Left"
-            elif events.key == K_RIGHT:
-                self.pac.direction = "Right"
+        if events[K_ESCAPE]:
+            self.running = False
+        if events[K_UP]:
+            self.pac.turn = "Up"
+        elif events[K_DOWN]:
+            self.pac.turn = "Down"
+        elif events[K_LEFT]:
+            self.pac.turn = "Left"
+        elif events[K_RIGHT]:
+            self.pac.turn = "Right"
 
     def drawGame(self):
         # Clear screen and draw all groups
-        self.screen.fill((0, 0, 0))
+        # self.screen.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
         score = self.myFont.render("Score: %4d" % self.pac.score, False, (255,
                                                                     255, 255))
@@ -110,16 +123,17 @@ class Game(object):
         self.screen.blit(lives, (20, 20))
         if self.inMenu:  # TODO: Menu Design
             self.screen.blit(self.ready, (264, 477))
-        # self.itemGroup.draw(self.screen)
+        # self.fruitGroup.draw(self.screen)
         self.pelletGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
-        self.wallGroup.draw(self.screen)
-        self.wallGroup.draw(self.screen)
+        # self.wallGroup.draw(self.screen)
+        # self.turnGroup.draw(self.screen)
         display.flip()
 
     def animate(self):
         self.pelletGroup.update()
+        self.fruitGroup.update()
         self.ghostGroup.update()
         self.pacmanGroup.update()
 
@@ -130,37 +144,33 @@ class Game(object):
                 self.gameOver()
             else:
                 self.reset()
+            return False
         # If hitting wall then reset before drawing movement
-        self.wallCheck(self.pac)
         self.pac.itemCheck(self.pelletGroup)
+        if self.pac.turn:
+            self.turn(self.pac)
+        return self.wallCheck(self.pac)
 
     def wallCheck(self, character):
+        dirs = []
         teleport = sprite.spritecollide(character, self.tpGroup, False)
 
         for tp in teleport:
             if tp == self.left:
                 character.rect.right = self.right.rect.left
-                return
             elif tp == self.right:
                 character.rect.left = self.left.rect.right
-                return
 
         collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
                                              False)
         # If horizontal collision
         for hitObject in collisionList:
-            if hitObject == self.left:
-                character.rect.left = self.right.rect.left
-                return
-            elif hitObject == self.right:
-                character.rect.right = self.left.rect.right
-                return
             if character.DIRECTIONS[character.direction][0] > 0:
                 character.rect.right = hitObject.rect.left
-                return True
+                dirs.append("Right")
             elif character.DIRECTIONS[character.direction][0] < 0:
                 character.rect.left = hitObject.rect.right
-                return True
+                dirs.append("Left")
 
         # Have to redefine list since sprite may have moved in last loop
         collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
@@ -169,10 +179,26 @@ class Game(object):
         for hitObject in collisionList:
             if character.DIRECTIONS[character.direction][1] > 0:
                 character.rect.bottom = hitObject.rect.top
-                return True
+                dirs.append("Down")
             elif character.DIRECTIONS[character.direction][1] < 0:
                 character.rect.top = hitObject.rect.bottom
-                return True
+                dirs.append("Up")
+
+        return dirs
+
+    def turn(self, character):
+        if character.turn == oppositeDirection(character.direction) and not \
+            self.wallCheck(character):
+            character.direction = character.turn
+            character.turn = None
+        collisionList = sprite.spritecollide(character,
+                                             self.turnGroup.sprites(), False)
+        for turnBlock in collisionList:
+            if character.rect.x == turnBlock.rect.x and \
+               character.rect.y == turnBlock.rect.y:
+                if character.turn in turnBlock.directions:
+                    character.direction = character.turn
+                    character.turn = None
 
     def run(self):
         time_elapsed = 0
@@ -180,11 +206,13 @@ class Game(object):
             # Keeps track of the number of ticks
             time_elapsed += self.clock.tick(self.frames_per_second)
             # Checks for input
-            self.keyPressed()
-            # Move and check for collisions/reset position
+            for i in range(5):
+                self.keyPressed()
+                self.pac.movement()
+                self.checkCollision()
+
             for ghost in self.ghostGroup.sprites():
                 ghost.movement()
-            self.pac.movement()
             self.checkCollision()
             for ghost in self.ghostGroup.sprites():
                 if self.wallCheck(ghost):
@@ -211,6 +239,16 @@ class Game(object):
                         self.inMenu = False
                         self.running = True
                         self.run()
+
+def oppositeDirection(direction):
+    if direction == "Up":
+        return "Down"
+    elif direction == "Down":
+        return "Up"
+    elif direction == "Left":
+        return "Right"
+    elif direction == "Right":
+        return "Left"
 
 def main():
     game = Game()

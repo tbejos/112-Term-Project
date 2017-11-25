@@ -23,8 +23,6 @@ class Item(sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-
-
 class Pellet(Item):
 
     def __init__(self, x, y):

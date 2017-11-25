@@ -85,16 +85,13 @@ class Inky(GhostSprite):
 
     def __init__(self):
         super().__init__("Inky")
-        self.direction = "Up"
 
 class Pinky(GhostSprite):
 
     def __init__(self):
         super().__init__("Pinky")
-        self.direction = "Down"
 
 class Clyde(GhostSprite):
 
     def __init__(self):
         super().__init__("Clyde")
-        self.direction = "Up"

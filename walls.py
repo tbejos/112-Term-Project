@@ -20,7 +20,18 @@ class WallTile(Wall):
     def __init__(self, x=0, y=0):
         super().__init__("WallTile", x, y)
 
+class HitBox(Wall):
+
+    def __init__(self, x=0, y=0):
+        super().__init__("HitBox", x, y)
+
 class TeleportBlock(Wall):
 
     def __init__(self, x=0, y=0):
         super().__init__("TPBlock", x, y)
+
+class Turn(Wall):
+
+    def __init__(self, directions, x=0, y=0):
+        super().__init__("Turn", x, y)
+        self.directions = directions
