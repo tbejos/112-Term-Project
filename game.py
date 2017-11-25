@@ -132,7 +132,6 @@ class Game(object):
         display.flip()
 
     def animate(self):
-        self.pelletGroup.update()
         self.fruitGroup.update()
         self.ghostGroup.update()
         self.pacmanGroup.update()
@@ -202,6 +201,7 @@ class Game(object):
 
     def run(self):
         time_elapsed = 0
+        counter = 0
         while self.running:
             # Keeps track of the number of ticks
             time_elapsed += self.clock.tick(self.frames_per_second)
@@ -223,6 +223,11 @@ class Game(object):
             if time_elapsed >= 100:
                 self.animate()
                 time_elapsed = 0
+                counter += 1
+            if counter == 3:
+                self.pelletGroup.update()
+                counter = 0
+
 
     def menu(self):
         self.ready = image.load('images/Walls/Ready.png')
