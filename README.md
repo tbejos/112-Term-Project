@@ -2,9 +2,9 @@
 This will be my repo for my 15-112 Term Project
 
 This is a game based around the original Pac-Man arcade game. It should work on
-all Python 3.X versions; however, it was only tested using 'Python 3.6.1'
+all Python 3.X versions; however, it was only tested using `Python 3.6.1`
 
-The only required modules are PyGame. This was developed using 'PyGame 1.9.3' and
+The only required modules are PyGame. This was developed using `PyGame 1.9.3` and
 I can not guarantee compatibility with future builds or older builds.
 
 # Instructions
