@@ -11,8 +11,9 @@ python3 or pip3 depending on your OS's configuration.* I can not guarantee
 compatibility with future builds or older builds.
 
 # Instructions
-Once you clone the repository the way to run the game is to run the game.py file
+- Clone the repository the way to run the game is to run the game.py file
 and it should start everything.
-Use the arrow keys to move Pac-Man and you can press escape at any given time to
- exit.
-The goal of the game is to collect the pellets while avoiding the ghosts.
+- The goal of the game is to collect the pellets while avoiding the ghosts.
+- Use the arrow keys to move Pac-Man
+- You can press escape at any given time to exit.
+- Have fun
