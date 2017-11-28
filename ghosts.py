@@ -24,6 +24,7 @@ class GhostSprite(sprite.Sprite):
         self.name = name
         self.direction = "Left"
         self.index = 0
+        self.turn = None
 
         self.image = image.load('images/Ghost Sprites/%s%sA.png' % (self.name,
                                                            self.direction))
@@ -77,9 +78,6 @@ class Blinky(GhostSprite):
 
     def __init__(self):
         super().__init__("Blinky")
-
-    def movement(self):
-        pass
 
 class Inky(GhostSprite):
 

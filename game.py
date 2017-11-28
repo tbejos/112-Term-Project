@@ -3,9 +3,11 @@
 # 15-112 Term Project
 
 import ghosts, pacman, items, walls
+import random
 from pygame import *
 
 class Game(object):
+    turns = ["Left", "Right", "Up", "Down"]
 
     def __init__(self):
         init()
@@ -79,14 +81,17 @@ class Game(object):
             self.turnGroup.add(walls.Turn( list[2:],int(list[0]), int(list[1])))
 
     def reset(self):
-        self.blinky.setPosition(315, 327)
-        self.blinky.direction = "Left"
-        self.inky.setPosition(267, 399)
-        self.inky.direction = "Up"
-        self.pinky.setPosition(315, 399)
-        self.pinky.direction = "Down"
-        self.clyde.setPosition(363, 399)
-        self.clyde.direction = "Up"
+        for ghost in self.ghostGroup.sprites():
+            ghost.setPosition(312, 324)
+            ghost.direction = self.turns[random.randint(0, 1)]
+        # self.blinky.setPosition(315, 327)
+        # self.blinky.direction = "Left"
+        # self.inky.setPosition(267, 399)
+        # self.inky.direction = "Up"
+        # self.pinky.setPosition(315, 399)
+        # self.pinky.direction = "Down"
+        # self.clyde.setPosition(363, 399)
+        # self.clyde.direction = "Up"
         self.pac.setPosition(312, 612)
         self.pac.direction = "Left"
 
@@ -186,8 +191,9 @@ class Game(object):
         return dirs
 
     def turn(self, character):
-        if character.turn == oppositeDirection(character.direction) and not \
-            self.wallCheck(character):
+        if character.name == "PacMan" and \
+           character.turn == oppositeDirection(character.direction) and not \
+           self.wallCheck(character):
             character.direction = character.turn
             character.turn = None
         collisionList = sprite.spritecollide(character,
@@ -215,8 +221,8 @@ class Game(object):
                 ghost.movement()
             self.checkCollision()
             for ghost in self.ghostGroup.sprites():
-                if self.wallCheck(ghost):
-                    ghost.switchDirection()
+                if self.wallCheck(ghost) and ghost.turn:
+                    self.turn(ghost)
             # Draw
             self.drawGame()
             # Only animates every ~100 ms to make it normal speed
@@ -225,9 +231,10 @@ class Game(object):
                 time_elapsed = 0
                 counter += 1
             if counter == 3:
+                for ghost in self.ghostGroup.sprites():
+                    ghost.turn = self.turns[random.randint(0, 3)]
                 self.pelletGroup.update()
                 counter = 0
-
 
     def menu(self):
         self.ready = image.load('images/Walls/Ready.png')
