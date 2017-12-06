@@ -3,7 +3,6 @@
 # 15-112 Term Project
 
 import ghosts, pacman, items, walls
-import random
 from pygame import *
 
 class Game(object):
@@ -51,9 +50,11 @@ class Game(object):
         self.right = walls.TeleportBlock(698, 396)
         self.tpGroup.add(self.left, self.right)
         self.makeMaze()
+        self.index = 1
+        self.goal = 43
 
     def makeMaze(self):
-        maze = open("Maze.txt", "r")
+        maze = open("text/Maze.txt", "r")
         ycounter = 0
         for line in maze.readlines():
             for char in range(len(line)):
@@ -61,7 +62,7 @@ class Game(object):
                     self.wallGroup.add(walls.HitBox(12 * char,
                                                       72 + ycounter))
             ycounter += 12
-        pellets = open("Pellets.txt", "r")
+        pellets = open("text/Pellets.txt", "r")
         ycounter = 0
         for line in pellets.readlines():
             for char in range(len(line)):
@@ -72,26 +73,22 @@ class Game(object):
                     self.pelletGroup.add(items.PowerPellet(24 * char,
                                                            72 + ycounter))
             ycounter += 24
-        turns = open("turn.txt", "r")
+        turns = open("text/Turn.txt", "r")
+        index = 1
         for line in turns.readlines():
             list = []
             line = line[:-1]
             for param in line.split(","):
                 list.append(param)
-            self.turnGroup.add(walls.Turn( list[2:],int(list[0]), int(list[1])))
+            self.turnGroup.add(walls.Turn( index, list[2:],int(list[0]),
+                                           int(list[1])))
+            index += 1
 
     def reset(self):
         for ghost in self.ghostGroup.sprites():
             ghost.setPosition(312, 324)
-            ghost.direction = self.turns[random.randint(0, 1)]
-        # self.blinky.setPosition(315, 327)
-        # self.blinky.direction = "Left"
-        # self.inky.setPosition(267, 399)
-        # self.inky.direction = "Up"
-        # self.pinky.setPosition(315, 399)
-        # self.pinky.direction = "Down"
-        # self.clyde.setPosition(363, 399)
-        # self.clyde.direction = "Up"
+            ghost.turn = "Left"
+            ghost.direction = "Left"
         self.pac.setPosition(312, 612)
         self.pac.direction = "Left"
 
@@ -150,13 +147,23 @@ class Game(object):
                 self.reset()
             return False
         # If hitting wall then reset before drawing movement
-        self.pac.itemCheck(self.pelletGroup)
+        self.itemCheck()
         if self.pac.turn:
             self.turn(self.pac)
-        return self.wallCheck(self.pac)
+        self.teleportCheck(self.pac)
+        return self.horizontalWalls(self.pac) + self.verticalWalls(self.pac)
 
-    def wallCheck(self, character):
-        dirs = []
+    def itemCheck(self):
+        collisionList = sprite.spritecollide(self.pac,
+                                             self.pelletGroup.sprites(),
+                                             False)
+        for item in collisionList:
+            self.pac.score += item.points
+            if item.name == "PowerPellet":
+                self.pac.powerpellet = True
+            item.kill()
+
+    def teleportCheck(self, character):
         teleport = sprite.spritecollide(character, self.tpGroup, False)
 
         for tp in teleport:
@@ -164,27 +171,39 @@ class Game(object):
                 character.rect.right = self.right.rect.left
             elif tp == self.right:
                 character.rect.left = self.left.rect.right
+    """
+    Most of my wall code is heavily based off of this video
+    https://www.youtube.com/watch?v=57bkG0HytI8&list=PL1H1sBF1VAKXh0GR1O94UUguIxkCP3dHM&index=12
+    however I have made some modifications in order to better reflect my use 
+    case.
+    """
+    def horizontalWalls(self, character):
+        dirs = []
 
         collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
                                              False)
         # If horizontal collision
         for hitObject in collisionList:
-            if character.DIRECTIONS[character.direction][0] > 0:
+            if character.MOVES[character.direction][0] > 0:
                 character.rect.right = hitObject.rect.left
                 dirs.append("Right")
-            elif character.DIRECTIONS[character.direction][0] < 0:
+            elif character.MOVES[character.direction][0] < 0:
                 character.rect.left = hitObject.rect.right
                 dirs.append("Left")
 
-        # Have to redefine list since sprite may have moved in last loop
+        return dirs
+
+    def verticalWalls(self, character):
+        dirs = []
+
         collisionList = sprite.spritecollide(character, self.wallGroup.sprites(),
                                              False)
         # If vertical collision
         for hitObject in collisionList:
-            if character.DIRECTIONS[character.direction][1] > 0:
+            if character.MOVES[character.direction][1] > 0:
                 character.rect.bottom = hitObject.rect.top
                 dirs.append("Down")
-            elif character.DIRECTIONS[character.direction][1] < 0:
+            elif character.MOVES[character.direction][1] < 0:
                 character.rect.top = hitObject.rect.bottom
                 dirs.append("Up")
 
@@ -193,48 +212,84 @@ class Game(object):
     def turn(self, character):
         if character.name == "PacMan" and \
            character.turn == oppositeDirection(character.direction) and not \
-           self.wallCheck(character):
+            (self.horizontalWalls(character) + self.verticalWalls(character)):
             character.direction = character.turn
             character.turn = None
         collisionList = sprite.spritecollide(character,
                                              self.turnGroup.sprites(), False)
+
         for turnBlock in collisionList:
+            try:
+                if character.next >= 0:
+                    character.turn = turnBlock.directions[character.next]
+            except:
+                pass
+            if character.name == "Blinky":
+                self.index = turnBlock.index
+            if character.name == "PacMan":
+                self.goal = turnBlock.index
             if character.rect.x == turnBlock.rect.x and \
                character.rect.y == turnBlock.rect.y:
                 if character.turn in turnBlock.directions:
                     character.direction = character.turn
-                    character.turn = None
+                    if character.name == 'Blinky':
+                        character.turn = character.direction
+                    else:
+                        character.turn = None
 
     def run(self):
         time_elapsed = 0
         counter = 0
         while self.running:
+            if self.pac.powerpellet:
+                if counter == 30:
+                    self.pac.powerpellet = False
+                    counter = 0
+                for ghost in self.ghostGroup.sprites():
+                    ghost.image = ghost.pelleted["Normal"][ghost.index]
+                    if counter >= 20:
+                        ghost.image = ghost.pelleted["Flashing"][ghost.index]
             # Keeps track of the number of ticks
             time_elapsed += self.clock.tick(self.frames_per_second)
-            # Checks for input
-            for i in range(5):
-                self.keyPressed()
-                self.pac.movement()
-                self.checkCollision()
+            # Movement and collision detections
+            self.movePac(5)
+            self.moveGhosts(3)
+            # Draw
+            self.drawGame()
+            # Only animates every ~100 ms to make it normal speed
+            if time_elapsed >= 200:
+                self.animate()
+                time_elapsed = 0
+                counter += 1
+            # Do ghost things
+            for ghost in self.ghostGroup.sprites():
+                ghost.updateTurn(self.goal, self.index)
+            # every ~300 ms update pellets then
+            if counter % 5 == 0:
+                self.pelletGroup.update()
+                if not self.pac.powerpellet:
+                    counter = 0
 
+    def movePac(self, numPixels):
+        # Moves numPixels but 1 at a time to make sure we don't miss anything
+        for i in range(numPixels):
+            self.keyPressed()
+            self.pac.movement()
+            self.checkCollision()
+
+    def moveGhosts(self, numPixels):
+        # Moves numPixels but 1 pixel ata time in order to make sure we don't
+        # miss any turns or jump into walls
+        for i in range(numPixels):
             for ghost in self.ghostGroup.sprites():
                 ghost.movement()
             self.checkCollision()
             for ghost in self.ghostGroup.sprites():
-                if self.wallCheck(ghost) and ghost.turn:
+                self.teleportCheck(ghost)
+                self.horizontalWalls(ghost)
+                self.verticalWalls(ghost)
+                if ghost.turn:
                     self.turn(ghost)
-            # Draw
-            self.drawGame()
-            # Only animates every ~100 ms to make it normal speed
-            if time_elapsed >= 100:
-                self.animate()
-                time_elapsed = 0
-                counter += 1
-            if counter == 3:
-                for ghost in self.ghostGroup.sprites():
-                    ghost.turn = self.turns[random.randint(0, 3)]
-                self.pelletGroup.update()
-                counter = 0
 
     def menu(self):
         self.ready = image.load('images/Walls/Ready.png')

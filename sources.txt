@@ -1,3 +1,7 @@
+As of right now I have not copied code (unless otherwise denoted in the
+source files) however I wanted to link the sources
+where I got the information in order to be able to right my own code.
+
 Pac Man Info
     https://en.wikipedia.org/wiki/Namco_Pac-Man
     http://www.arcade-museum.com/game_detail.php?game_id=10816
@@ -6,6 +10,7 @@ Pac Man Info
 PyGame Info
     http://www.nerdparadise.com/programming/pygame/part1
     http://pygame.org/docs/tut/PygameIntro.html
+    https://www.youtube.com/playlist?list=PL1H1sBF1VAKXh0GR1O94UUguIxkCP3dHM
 
 Graphics
     http://cdn.wccftech.com/wp-content/uploads/2015/04/pacmaan.png

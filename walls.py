@@ -32,6 +32,7 @@ class TeleportBlock(Wall):
 
 class Turn(Wall):
 
-    def __init__(self, directions, x=0, y=0):
+    def __init__(self, index, directions, x=0, y=0):
         super().__init__("Turn", x, y)
+        self.index = index
         self.directions = directions

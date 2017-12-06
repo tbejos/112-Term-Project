@@ -7,7 +7,7 @@ from pygame import *
 
 class PacMan(sprite.Sprite):
     # Amount PacMan moves per tick
-    DIRECTIONS = {"Left":(-1, 0),
+    MOVES = {"Left":(-1, 0),
                   "Right":(1, 0),
                   "Up":(0, -1),
                   "Down":(0, 1)}
@@ -47,19 +47,20 @@ class PacMan(sprite.Sprite):
         self.rect.x, self.rect.y = x, y
 
     def movement(self):
-        self.rect.x += self.DIRECTIONS[self.direction][0]
-        self.rect.y += self.DIRECTIONS[self.direction][1]
+        self.rect.x += self.MOVES[self.direction][0]
+        self.rect.y += self.MOVES[self.direction][1]
 
     def ghostCheck(self, ghostGroup): # True or False
         collisionList = sprite.spritecollide(self, ghostGroup.sprites(), False)
         # If touching >= 1 ghost
-        return len(collisionList) > 0
-
-    def itemCheck(self, itemGroup):
-        collisionList = sprite.spritecollide(self, itemGroup.sprites(), False)
-        for item in collisionList:
-            self.score += item.points
-            item.kill()
+        for ghost in collisionList:
+            if ghost.rect.y == self.rect.x and ghost.rect.x in range(
+                    self.rect.x - 24, self.rect.x + 25):
+                return True
+            if ghost.rect.x == self.rect.x and ghost.rect.y in range(
+                    self.rect.y - 24, self.rect.y + 25):
+                return True
+        return False
 
     def switchDirection(self):
         if self.direction == "Up":
