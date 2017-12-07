@@ -241,6 +241,9 @@ class Game(object):
         time_elapsed = 0
         counter = 0
         while self.running:
+            if len(self.pelletGroup.sprites()) == 0:
+                self.makeMaze()
+                self.reset()
             if self.pac.powerpellet:
                 if counter == 30:
                     self.pac.powerpellet = False
