@@ -14,3 +14,6 @@ PyGame Info
 
 Graphics
     http://cdn.wccftech.com/wp-content/uploads/2015/04/pacmaan.png
+
+Sounds
+    http://www.classicgaming.cc/classics/pac-man/sounds

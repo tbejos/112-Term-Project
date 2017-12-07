@@ -16,12 +16,13 @@ class PacMan(sprite.Sprite):
         super().__init__()
         self.name = name
         self.direction = "Left"
-        self.index = 1
+        self.index = 43
+        self.count = 0
         self.powerpellet = False
         self.lives = 3
         self.score = 0
         self.turn = None
-
+        self.ghost = mixer.Sound('sounds/pacman_eatghost.wav')
         self.image = image.load('images/%s/%sClosed.png' % (self.name,
                                                            self.name))
         self.backup = self.image # Backup of closed so that we can update()
@@ -36,12 +37,12 @@ class PacMan(sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        if self.index == 1:
+        if self.count == 1:
             self.image = self.open[self.direction]
-            self.index = 0
+            self.count = 0
         else:
             self.image = self.backup
-            self.index = 1
+            self.count = 1
         x, y = self.rect.x, self.rect.y
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -53,13 +54,22 @@ class PacMan(sprite.Sprite):
     def ghostCheck(self, ghostGroup): # True or False
         collisionList = sprite.spritecollide(self, ghostGroup.sprites(), False)
         # If touching >= 1 ghost
-        for ghost in collisionList:
-            if ghost.rect.y == self.rect.x and ghost.rect.x in range(
-                    self.rect.x - 24, self.rect.x + 25):
-                return True
-            if ghost.rect.x == self.rect.x and ghost.rect.y in range(
-                    self.rect.y - 24, self.rect.y + 25):
-                return True
+        if self.powerpellet:
+            for ghost in collisionList:
+                if not ghost.start:
+                    self.ghost.play()
+                    self.score += 400
+                ghost.start = True
+        else:
+            for ghost in collisionList:
+                if ghost.rect.y == self.rect.x and ghost.rect.x in range(
+                        self.rect.x - 24, self.rect.x + 25):
+                    if not ghost.start:
+                        return True
+                if ghost.rect.x == self.rect.x and ghost.rect.y in range(
+                        self.rect.y - 24, self.rect.y + 25):
+                    if not ghost.start:
+                        return True
         return False
 
     def switchDirection(self):

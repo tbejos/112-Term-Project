@@ -89,13 +89,16 @@ class GhostSprite(sprite.Sprite):
               "Down": (0, 1)}
     DIRECTIONS = ["Left", "Right", "Up", "Down"]
 
-    def __init__(self, name):
+    def __init__(self, name, home):
         super().__init__()
         self.name = name
+        self.home = home
         self.direction = "Left"
-        self.index = 0
+        self.index = 24
+        self.count = 0
         self.turn = "Left"
         self.next = None
+        self.start = False
         self.image = image.load('images/Ghost Sprites/%s%sA.png' % (self.name,
                                                            self.direction))
         self.other = \
@@ -118,17 +121,28 @@ class GhostSprite(sprite.Sprite):
              "Flashing":
                 [image.load('images/Ghost Sprites/PelletGhostA.png'),
                  image.load('images/Ghost Sprites/PelletGhostFlash.png')]}
-
+        self.eyes = \
+            {"Left":
+                image.load('images/Eyes/EyesLeft.png'),
+            "Right":
+                image.load('images/Eyes/EyesRight.png'),
+            "Up":
+                image.load('images/Eyes/EyesLeft.png'),
+            "Down":
+                image.load('images/Eyes/EyesLeft.png')}
 
 
         self.rect = self.image.get_rect()
 
     def update(self):
-        if self.index == 0:
-            self.index = 1
+        if self.count == 0:
+            self.count = 1
         else:
-            self.index = 0
-        self.image = self.other[self.direction][self.index]
+            self.count = 0
+        if self.start:
+            self.image = self.eyes[self.direction]
+        else:
+            self.image = self.other[self.direction][self.count]
         x, y = self.rect.x, self.rect.y
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -151,20 +165,15 @@ class GhostSprite(sprite.Sprite):
         elif self.direction == "Right":
             self.direction = "Left"
 
-    # TODO: Ghost AI
+    def randomTurn(self):
+        self.turn = self.DIRECTIONS[random.randint(0, 3)]
 
-class Blinky(GhostSprite):
-
-    def __init__(self):
-        super().__init__("Blinky")
-
-    def updateTurn(self, pac, index):
-        a = a_star_search(mazeGraph, index, pac)
-        # Makes sure we don't go out of bounds when he is eaten
+    def returnToStart(self):
+        a = a_star_search(mazeGraph, self.index, self.home)
         try:
-            self.next = mazeGraph.edges[index].index(self.parse(a, pac))
+            self.next = mazeGraph.edges[self.index].index(self.parse(a, 25))
         except:
-            self.next = 0
+            self.start = False
 
     def parse(self, map, goal):
         route, garbage = map
@@ -175,27 +184,55 @@ class Blinky(GhostSprite):
             i = route[i]
         return ans
 
+class Blinky(GhostSprite):
+
+    def __init__(self):
+        super().__init__("Blinky", 24)
+
+    def updateTurn(self, pac):
+        a = a_star_search(mazeGraph, self.index, pac)
+        # Makes sure we don't go out of bounds when he is eaten
+        try:
+            self.next = mazeGraph.edges[self.index].index(self.parse(a, pac))
+        except:
+            self.next = 0
+
 class Inky(GhostSprite):
 
     def __init__(self):
-        super().__init__("Inky")
+        super().__init__("Inky", 8)
 
-    def updateTurn(self, goal, index):
-        self.turn = self.DIRECTIONS[random.randint(0, 3)]
+    def updateTurn(self, goal):
+        if self.index in [8, 9, 10, 11, 12]:
+            self.turn = "Right"
+        if self.index in [13, 21, 30, 39]:
+            self.turn = "Down"
+        if self.index in [48, 47, 46, 45, 44]:
+            self.turn = "Left"
+        if self.index in [43, 34, 27, 16]:
+            self.turn = "Up"
 
 
 class Pinky(GhostSprite):
 
     def __init__(self):
-        super().__init__("Pinky")
+        super().__init__("Pinky", 25)
+        self.home = 25
 
-    def updateTurn(self, goal, index):
-        self.turn = self.DIRECTIONS[random.randint(0, 3)]
+    def updateTurn(self, goal):
+        if self.index in [23, 24, 25]:
+            self.turn = "Right"
+        if self.index in [26, 29]:
+            self.turn = "Down"
+        if self.index == 32:
+            self.turn = "Left"
+        if self.index in [31, 28]:
+            self.turn = "Up"
 
 class Clyde(GhostSprite):
 
     def __init__(self):
-        super().__init__("Clyde")
+        super().__init__("Clyde", 25)
 
-    def updateTurn(self, goal, index):
+    def updateTurn(self, goal):
         self.turn = self.DIRECTIONS[random.randint(0, 3)]

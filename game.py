@@ -45,34 +45,34 @@ class Game(object):
         self.running = False
         # Font
         self.myFont = font.SysFont('Consolas', 30)
+        self.chomp = mixer.Sound('sounds/pacman_chomp.wav')
+        self.die = mixer.Sound('sounds/pacman_death.wav')
         # -29 and 698 make it so PacMan is completely off screen
         self.left = walls.TeleportBlock(-29, 396)
         self.right = walls.TeleportBlock(698, 396)
         self.tpGroup.add(self.left, self.right)
         self.makeMaze()
-        self.index = 1
-        self.goal = 43
 
     def makeMaze(self):
         maze = open("text/Maze.txt", "r")
-        ycounter = 0
+        ycount = 0
         for line in maze.readlines():
             for char in range(len(line)):
                 if line[char] == "+":
                     self.wallGroup.add(walls.HitBox(12 * char,
-                                                      72 + ycounter))
-            ycounter += 12
+                                                      72 + ycount))
+            ycount += 12
         pellets = open("text/Pellets.txt", "r")
-        ycounter = 0
+        ycount = 0
         for line in pellets.readlines():
             for char in range(len(line)):
                 if line[char] == "+":
                     self.pelletGroup.add(items.Pellet(24 * char,
-                                                      72 + ycounter))
+                                                      72 + ycount))
                 elif line[char] == "*":
                     self.pelletGroup.add(items.PowerPellet(24 * char,
-                                                           72 + ycounter))
-            ycounter += 24
+                                                           72 + ycount))
+            ycount += 24
         turns = open("text/Turn.txt", "r")
         index = 1
         for line in turns.readlines():
@@ -85,10 +85,13 @@ class Game(object):
             index += 1
 
     def reset(self):
+        self.pac.powerpellet = False
         for ghost in self.ghostGroup.sprites():
-            ghost.setPosition(312, 324)
-            ghost.turn = "Left"
-            ghost.direction = "Left"
+            ghost.start = False
+        self.blinky.setPosition(312, 324)
+        self.clyde.setPosition(348, 324)
+        self.inky.setPosition(132,180)
+        self.pinky.setPosition(204, 324)
         self.pac.setPosition(312, 612)
         self.pac.direction = "Left"
 
@@ -129,8 +132,8 @@ class Game(object):
         self.pelletGroup.draw(self.screen)
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
-        # self.wallGroup.draw(self.screen)
-        # self.turnGroup.draw(self.screen)
+        self.wallGroup.draw(self.screen)
+        self.turnGroup.draw(self.screen)
         display.flip()
 
     def animate(self):
@@ -140,7 +143,9 @@ class Game(object):
 
     def checkCollision(self):
         if self.pac.ghostCheck(self.ghostGroup):
+            self.die.play()
             self.pac.lives -= 1
+            time.wait(1000)
             if self.pac.lives < 1:
                 self.gameOver()
             else:
@@ -160,6 +165,9 @@ class Game(object):
         for item in collisionList:
             self.pac.score += item.points
             if item.name == "PowerPellet":
+                # Resets timer
+                if self.pac.powerpellet:
+                    self.count = 0
                 self.pac.powerpellet = True
             item.kill()
 
@@ -210,6 +218,7 @@ class Game(object):
         return dirs
 
     def turn(self, character):
+        # Only PacMan can switch direction on a straight away
         if character.name == "PacMan" and \
            character.turn == oppositeDirection(character.direction) and not \
             (self.horizontalWalls(character) + self.verticalWalls(character)):
@@ -224,54 +233,63 @@ class Game(object):
                     character.turn = turnBlock.directions[character.next]
             except:
                 pass
-            if character.name == "Blinky":
-                self.index = turnBlock.index
-            if character.name == "PacMan":
-                self.goal = turnBlock.index
+            character.index = turnBlock.index
             if character.rect.x == turnBlock.rect.x and \
                character.rect.y == turnBlock.rect.y:
                 if character.turn in turnBlock.directions:
                     character.direction = character.turn
-                    if character.name == 'Blinky':
+                    if character in self.ghostGroup.sprites():
                         character.turn = character.direction
                     else:
                         character.turn = None
 
     def run(self):
         time_elapsed = 0
-        counter = 0
+        self.count = 0
+        mixer.music.load('sounds/pacman_chomp.wav')
+        mixer.music.play(-1)
         while self.running:
             if len(self.pelletGroup.sprites()) == 0:
+                self.pac.lives += 1
                 self.makeMaze()
                 self.reset()
             if self.pac.powerpellet:
-                if counter == 30:
+                if self.count >= 30:
                     self.pac.powerpellet = False
-                    counter = 0
+                    self.count = 0
+                    for ghost in self.ghostGroup.sprites():
+                        ghost.start = False
+                else:
+                    for ghost in self.ghostGroup.sprites():
+                        if not ghost.start:
+                            ghost.image = ghost.pelleted["Normal"][ghost.count]
+                            if self.count >= 20:
+                                ghost.image = ghost.pelleted["Flashing"][ghost.count]
+                        else:
+                            ghost.image = ghost.eyes[ghost.direction]
+                self.blinky.randomTurn()
+                self.clyde.randomTurn()
+                self.inky.updateTurn(self.pac.index)
+                self.pinky.updateTurn(self.pac.index)
+                self.moveGhosts(1)
+            else:
                 for ghost in self.ghostGroup.sprites():
-                    ghost.image = ghost.pelleted["Normal"][ghost.index]
-                    if counter >= 20:
-                        ghost.image = ghost.pelleted["Flashing"][ghost.index]
+                    ghost.updateTurn(self.pac.index)
+                self.moveGhosts(2)
             # Keeps track of the number of ticks
             time_elapsed += self.clock.tick(self.frames_per_second)
             # Movement and collision detections
-            self.movePac(5)
-            self.moveGhosts(3)
+            self.movePac(3)
             # Draw
             self.drawGame()
             # Only animates every ~100 ms to make it normal speed
             if time_elapsed >= 200:
                 self.animate()
                 time_elapsed = 0
-                counter += 1
-            # Do ghost things
-            for ghost in self.ghostGroup.sprites():
-                ghost.updateTurn(self.goal, self.index)
-            # every ~300 ms update pellets then
-            if counter % 5 == 0:
-                self.pelletGroup.update()
-                if not self.pac.powerpellet:
-                    counter = 0
+                if self.pac.powerpellet:
+                    self.count += 1
+                else:
+                    self.count = 0
 
     def movePac(self, numPixels):
         # Moves numPixels but 1 at a time to make sure we don't miss anything
@@ -297,6 +315,8 @@ class Game(object):
     def menu(self):
         self.ready = image.load('images/Walls/Ready.png')
         self.reset()
+        mixer.music.load('sounds/pacman_beginning.wav')
+        mixer.music.play(-1)
         while self.inMenu:
             self.drawGame()
             for menuEvent in event.get():
@@ -308,6 +328,7 @@ class Game(object):
                     if menuEvent.key == K_RETURN:
                         self.inMenu = False
                         self.running = True
+                        mixer.music.stop()
                         self.run()
 
 def oppositeDirection(direction):
