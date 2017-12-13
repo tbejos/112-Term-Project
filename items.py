@@ -2,8 +2,6 @@
 # tbejos
 # 15-112 Term Project
 
-# Should be 21 pixels away from each other
-
 from pygame import *
 
 class Item(sprite.Sprite):

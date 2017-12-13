@@ -133,7 +133,7 @@ class Game(object):
         self.ghostGroup.draw(self.screen)
         self.pacmanGroup.draw(self.screen)
         self.wallGroup.draw(self.screen)
-        self.turnGroup.draw(self.screen)
+        # self.turnGroup.draw(self.screen)
         display.flip()
 
     def animate(self):
